@@ -1,20 +1,21 @@
 package com.example.android.popularmovies;
 
 import android.content.Context;
+import android.net.Uri;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
-public class ImageAdapter extends BaseAdapter {
-
-    private Context context;
+public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapterViewHolder> {
 
     public static String[] mThumbIds = {
 
+            "http://image.tmdb.org/t/p/original/tWqifoYuwLETmmasnGHO7xBjEtt.jpg",
+            "http://image.tmdb.org/t/p/original/tWqifoYuwLETmmasnGHO7xBjEtt.jpg",
             "http://image.tmdb.org/t/p/original/tWqifoYuwLETmmasnGHO7xBjEtt.jpg",
             "http://image.tmdb.org/t/p/original/tWqifoYuwLETmmasnGHO7xBjEtt.jpg",
             "http://image.tmdb.org/t/p/original/tWqifoYuwLETmmasnGHO7xBjEtt.jpg",
@@ -22,46 +23,63 @@ public class ImageAdapter extends BaseAdapter {
     };
 
 
-    public ImageAdapter(Context c) {
-        context = c;
+    // empty default constructor
+    public ImageAdapter() {
+
     }
 
-    public int getCount() {
-        return mThumbIds.length;
+    // create viewHolder class that extends the RecylcerView ViewHolder
+    public class ImageAdapterViewHolder extends RecyclerView.ViewHolder {
+
+        public final ImageView movieImageView;
+
+        public ImageAdapterViewHolder(View view) {
+            super(view);
+            movieImageView = view.findViewById(R.id.movie_icon_iv);
+            // TODO: add on-click listener for each item here
+        }
+
     }
 
     @Override
-    public String getItem(int position) {
-        return mThumbIds[position];
+    public ImageAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        Context context = parent.getContext();
+        int layoutForListItem = R.layout.movie_list_item;
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        View view = inflater.inflate(layoutForListItem, parent, false);
+        ImageAdapterViewHolder holder = new ImageAdapterViewHolder(view);
+        return holder;
     }
 
-    public long getItemId(int position) {
-        return 0;
-    }
+    @Override
+    public void onBindViewHolder(ImageAdapterViewHolder holder, int position) {
 
-    // create a new ImageView for each item referenced by the Adapter
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
-        if (convertView == null) {
-            // if it's not recycled, initialize some attributes
-            imageView = new ImageView(context);
-            imageView.setLayoutParams(new GridView.LayoutParams(480, 480));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
-        } else {
-            imageView = (ImageView) convertView;
-        }
+        String movieThumbnails = mThumbIds[position];
+        Uri url = Uri.parse(movieThumbnails.toString());
+        Context context = holder.movieImageView.getContext();
 
-        // convert each gridbox into an image, if there is one!
-        String url = getItem(position);
         Picasso.with(context)
                 .load(url)
-                .placeholder(R.drawable.loader)
-                .fit()
-                .into(imageView);
+                .into(holder.movieImageView);
 
-        return imageView;
     }
 
+    // override getItemCount, and set to 0 if there are no items
+    @Override
+    public int getItemCount() {
+
+        if (mThumbIds == null) {
+            return 0;
+        }
+        return mThumbIds.length;
+    }
+
+    // notify the app that data has changed to refresh the view
+    public void setMovieData(String[] movieData) {
+        mThumbIds = movieData;
+        notifyDataSetChanged();
+    }
 
 }
