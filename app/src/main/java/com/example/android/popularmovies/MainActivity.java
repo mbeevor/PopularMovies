@@ -1,13 +1,18 @@
 package com.example.android.popularmovies;
 
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.example.android.popularmovies.data.PopularMoviesPreferences;
+import com.example.android.popularmovies.utlities.NetworkUtils;
+
+import java.net.URL;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -49,7 +54,9 @@ public class MainActivity extends AppCompatActivity {
 
         // adjust view to show recyclerview
         showMovieDataView();
-        new GetMovieDataTask().execute("https://api.themoviedb.org/3/configuration?api_key=4f1608301436c9fb197df0d1767fc7b1");
+
+        String apiKey = PopularMoviesPreferences.getApiKey();
+        new GetMovieDataTask().execute(apiKey);
 
     }
 
@@ -78,7 +85,18 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String[] doInBackground(String... strings) {
-            return new String[0];
+
+            if (strings.length == 0) {
+                return null;
+            }
+
+            String movie = strings[0];
+            URL queryUrl = NetworkUtils.buildUrl(movie);
+
+            try {
+
+                String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(queryUrl);
+            }
         }
 
         @Override
