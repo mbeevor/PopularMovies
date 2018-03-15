@@ -1,5 +1,6 @@
 package com.example.android.popularmovies;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -48,14 +49,14 @@ public class MainActivity extends AppCompatActivity {
 
         // adjust view to show recyclerview
         showMovieDataView();
-
+        new GetMovieDataTask().execute("https://api.themoviedb.org/3/configuration?api_key=4f1608301436c9fb197df0d1767fc7b1");
 
     }
 
     private void showMovieDataView() {
 
-        // hide the progress bar and show the recycler view
-        progressBar.setVisibility(View.INVISIBLE);
+        // hide the error message and show the recycler view
+        emptyTextView.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
     }
 
@@ -66,4 +67,36 @@ public class MainActivity extends AppCompatActivity {
         emptyTextView.setVisibility(View.VISIBLE);
     }
 
+    public class GetMovieDataTask extends AsyncTask<String, Void, String[]> {
+
+        // show progress bar whilst AsyncTask is running
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected String[] doInBackground(String... strings) {
+            return new String[0];
+        }
+
+        @Override
+        protected void onPostExecute(String[] movieData) {
+
+            /* on completion of AsyncTask, hide the progress bar and
+            * either show the movie data,
+            * or an error message if there is no data
+             */
+            progressBar.setVisibility(View.INVISIBLE);
+
+            if (movieData != null) {
+                showMovieDataView();
+                imageAdapter.setMovieData(movieData);
+            } else {
+                showErrorView();
+            }
+
+        }
+    }
 }

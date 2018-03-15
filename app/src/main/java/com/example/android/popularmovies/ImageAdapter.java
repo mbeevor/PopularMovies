@@ -12,15 +12,7 @@ import com.squareup.picasso.Picasso;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapterViewHolder> {
 
-    public static String[] mThumbIds = {
-
-            "http://image.tmdb.org/t/p/original/tWqifoYuwLETmmasnGHO7xBjEtt.jpg",
-            "http://image.tmdb.org/t/p/original/tWqifoYuwLETmmasnGHO7xBjEtt.jpg",
-            "http://image.tmdb.org/t/p/original/tWqifoYuwLETmmasnGHO7xBjEtt.jpg",
-            "http://image.tmdb.org/t/p/original/tWqifoYuwLETmmasnGHO7xBjEtt.jpg",
-            "http://image.tmdb.org/t/p/original/tWqifoYuwLETmmasnGHO7xBjEtt.jpg",
-
-    };
+    public String[] movieImageData;
 
 
     // empty default constructor
@@ -56,7 +48,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapter
     @Override
     public void onBindViewHolder(ImageAdapterViewHolder holder, int position) {
 
-        String movieThumbnails = mThumbIds[position];
+        String movieThumbnails = movieImageData[position];
         Uri url = Uri.parse(movieThumbnails.toString());
         Context context = holder.movieImageView.getContext();
 
@@ -70,15 +62,15 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapter
     @Override
     public int getItemCount() {
 
-        if (mThumbIds == null) {
+        if (movieImageData == null) {
             return 0;
         }
-        return mThumbIds.length;
+        return movieImageData.length;
     }
 
     // notify the app that data has changed to refresh the view
     public void setMovieData(String[] movieData) {
-        mThumbIds = movieData;
+        movieImageData = movieData;
         notifyDataSetChanged();
     }
 
