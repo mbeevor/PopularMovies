@@ -13,6 +13,7 @@ import com.example.android.popularmovies.data.PopularMoviesPreferences;
 import com.example.android.popularmovies.utlities.NetworkUtils;
 
 import java.net.URL;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -74,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         emptyTextView.setVisibility(View.VISIBLE);
     }
 
-    public class GetMovieDataTask extends AsyncTask<String, Void, String[]> {
+    public class GetMovieDataTask extends AsyncTask<String, Void, List<Movie>> {
 
         // show progress bar whilst AsyncTask is running
         @Override
@@ -84,23 +85,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String[] doInBackground(String... strings) {
+        protected List<Movie> doInBackground(String... strings) {
 
-            if (strings.length == 0) {
-                return null;
-            }
-
-            String movie = strings[0];
-            URL queryUrl = NetworkUtils.buildUrl(movie);
-
-            try {
-
-                String jsonMovieResponse = NetworkUtils.getResponseFromHttpUrl(queryUrl);
-            }
+            return null;
         }
 
         @Override
-        protected void onPostExecute(String[] movieData) {
+        protected void onPostExecute(List<Movie> movieData) {
 
             /* on completion of AsyncTask, hide the progress bar and
             * either show the movie data,
@@ -110,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (movieData != null) {
                 showMovieDataView();
-                imageAdapter.setMovieData(movieData);
+                imageAdapter.updateMovieData(movieData);
             } else {
                 showErrorView();
             }

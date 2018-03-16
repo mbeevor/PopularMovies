@@ -1,6 +1,7 @@
 package com.example.android.popularmovies;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,14 +9,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.android.popularmovies.data.PopularMoviesPreferences;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapterViewHolder> {
 
-    public String[] movieImageData;
+    private List<Movie> moviesList;
 
 
-    // empty default constructor
+    // default constructor
     public ImageAdapter() {
 
     }
@@ -23,7 +27,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapter
     // create viewHolder class that extends the RecylcerView ViewHolder
     public class ImageAdapterViewHolder extends RecyclerView.ViewHolder {
 
-        public final ImageView movieImageView;
+        public ImageView movieImageView;
 
         public ImageAdapterViewHolder(View view) {
             super(view);
@@ -48,13 +52,14 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapter
     @Override
     public void onBindViewHolder(ImageAdapterViewHolder holder, int position) {
 
-        String movieThumbnails = movieImageData[position];
-        Uri url = Uri.parse(movieThumbnails.toString());
-        Context context = holder.movieImageView.getContext();
+        final Movie movie = moviesList.get(position);
+        ImageAdapterViewHolder imageAdapterViewHolder = (ImageAdapterViewHolder) holder;
+        Context context = imageAdapterViewHolder.movieImageView.getContext();
 
         Picasso.with(context)
-                .load(url)
-                .into(holder.movieImageView);
+                .load(PopularMoviesPreferences.IMAGE_BASE_URL)
+                .into(imageAdapterViewHolder.movieImageView);
+//                TODO: add full poster path to URL
 
     }
 
@@ -62,15 +67,15 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapter
     @Override
     public int getItemCount() {
 
-        if (movieImageData == null) {
+        if (moviesList == null) {
             return 0;
         }
-        return movieImageData.length;
+        return moviesList.size();
     }
 
     // notify the app that data has changed to refresh the view
-    public void setMovieData(String[] movieData) {
-        movieImageData = movieData;
+    public void updateMovieData(List<Movie> movieData) {
+        moviesList = movieData;
         notifyDataSetChanged();
     }
 
