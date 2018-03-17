@@ -9,6 +9,7 @@ public class Movie {
     private String movieTitle;
     private String posterImage;
 
+    // constructor for creating a movie
     public Movie(String title, String imageUrl) {
 
         movieTitle = title;

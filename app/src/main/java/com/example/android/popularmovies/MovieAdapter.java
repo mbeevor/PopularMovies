@@ -1,65 +1,67 @@
 package com.example.android.popularmovies;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.data.PopularMoviesPreferences;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageAdapterViewHolder> {
+public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
-    private List<Movie> moviesList;
-
+    public List<Movie> moviesList;
 
     // default constructor
-    public ImageAdapter() {
+    public MovieAdapter(List<Movie> objects) {
+
+        moviesList = objects;
 
     }
 
     // create viewHolder class that extends the RecylcerView ViewHolder
-    public class ImageAdapterViewHolder extends RecyclerView.ViewHolder {
+    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
 
-        public ImageView movieImageView;
+        public ImageView posterImageView;
 
-        public ImageAdapterViewHolder(View view) {
+        public MovieAdapterViewHolder(View view) {
             super(view);
-            movieImageView = view.findViewById(R.id.movie_icon_iv);
+            posterImageView = view.findViewById(R.id.movie_icon_iv);
             // TODO: add on-click listener for each item here
         }
 
     }
 
     @Override
-    public ImageAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         Context context = parent.getContext();
         int layoutForListItem = R.layout.movie_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
 
         View view = inflater.inflate(layoutForListItem, parent, false);
-        ImageAdapterViewHolder holder = new ImageAdapterViewHolder(view);
+        MovieAdapterViewHolder holder = new MovieAdapterViewHolder(view);
         return holder;
     }
 
     @Override
-    public void onBindViewHolder(ImageAdapterViewHolder holder, int position) {
+    public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
 
-        final Movie movie = moviesList.get(position);
-        ImageAdapterViewHolder imageAdapterViewHolder = (ImageAdapterViewHolder) holder;
-        Context context = imageAdapterViewHolder.movieImageView.getContext();
+        Movie movie = moviesList.get(position);
+        String moviePoster = movie.getPosterImage();
+        MovieAdapterViewHolder imageAdapterViewHolder = holder;
+        Context context = imageAdapterViewHolder.posterImageView.getContext();
+
+        String posterImageUrl = PopularMoviesPreferences.getImageBaseUrl() + moviePoster;
 
         Picasso.with(context)
-                .load(PopularMoviesPreferences.IMAGE_BASE_URL)
-                .into(imageAdapterViewHolder.movieImageView);
-//                TODO: add full poster path to URL
+                .load(posterImageUrl)
+                .into(imageAdapterViewHolder.posterImageView);
 
     }
 

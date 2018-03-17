@@ -17,22 +17,23 @@ import java.util.List;
 
 public class QueryUtils {
 
-    private static List<Movie> extractMovies(String movieJson) {
+    public static List<Movie> getSimpleMovieQueryStringFromJson(String movieJson) {
 
         if (TextUtils.isEmpty(movieJson)) {
             return null;
         }
 
+        // create list of movies using the JSONArray and the movie constructor
         List<Movie> movies = new ArrayList<>();
 
         try {
 
-            JSONObject jsonObject = new JSONObject(movieJson);
+            JSONObject moviesJson = new JSONObject(movieJson);
 
-            JSONArray results = jsonObject.getJSONArray("results");
+            JSONArray moviesArray = moviesJson.getJSONArray("results");
 
-            for (int i = 0; 1 <results.length(); i++) {
-                JSONObject currentMovie = results.getJSONObject(i);
+            for (int i = 0; 1 <moviesArray.length(); i++) {
+                JSONObject currentMovie = moviesArray.getJSONObject(i);
 
                 String movieTitle = currentMovie.getString("title");
                 String posterImage = currentMovie.getString("poster_path");

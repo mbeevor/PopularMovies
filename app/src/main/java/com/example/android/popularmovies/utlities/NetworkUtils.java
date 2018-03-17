@@ -20,9 +20,10 @@ public class NetworkUtils {
     // the format we want the API to return
     private static final String format = "json";
 
-    private static final String baseUrl = PopularMoviesPreferences.getBaseUrl();
-    private static final String popular = PopularMoviesPreferences.getPopular();
-    private static final String apiKey = PopularMoviesPreferences.getApiKey();
+    public static final String baseUrl = PopularMoviesPreferences.getBaseUrl();
+    public static final String popular = PopularMoviesPreferences.getPopular();
+    public static final String topRated = PopularMoviesPreferences.getTopRated();
+    public static final String apiKey = PopularMoviesPreferences.getApiKey();
 
 
     /**
@@ -35,10 +36,8 @@ public class NetworkUtils {
 
     public static URL buildUrl(String typeOfQuery) {
 
-        Uri builtUri = Uri.parse(baseUrl).buildUpon()
-                .appendPath(popular)
-                .appendPath(apiKey)
-                .build();
+        Uri builtUri = Uri.parse(baseUrl + typeOfQuery + "?api_key=" + apiKey).buildUpon()
+                                .build();
 
         URL url = null;
         try {
