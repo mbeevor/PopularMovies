@@ -7,13 +7,13 @@ package com.example.android.popularmovies.data;
 public class PopularMoviesPreferences {
 
     // TODO: replace API_KEY with your own working key
-    public static final String API_KEY = "api_key";
+    public static final String API_KEY = "4f1608301436c9fb197df0d1767fc7b1";
 
     public static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
     public static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w185";
 
     public static final String POPULAR = "popular";
-    public static final String TOP_RATED = "top_rated?api_key=";
+    public static final String TOP_RATED = "top_rated";
 
 
     public static String getBaseUrl() {
