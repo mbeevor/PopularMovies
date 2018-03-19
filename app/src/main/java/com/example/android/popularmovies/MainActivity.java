@@ -52,15 +52,15 @@ public class MainActivity extends AppCompatActivity {
         movieListAdapter = new MovieAdapter(moviesList);
         recyclerView.setAdapter(movieListAdapter);
 
+        // hide empty text view
+        emptyTextView.setVisibility(View.INVISIBLE);
+
         // call loadMovieData method
         loadMovieData();
     }
 
 
     private void loadMovieData() {
-
-        // adjust view to show recyclerview
-        showMovieDataView();
 
         /* TODO: update this to a separate method and replace 'getPopular' with variable to be determined
         * by selection of popular or top-rated
@@ -92,11 +92,11 @@ public class MainActivity extends AppCompatActivity {
         switch (getResources().getConfiguration().orientation) {
 
             case Configuration.ORIENTATION_PORTRAIT:
-            gridColumns = 4;
+            gridColumns = 2;
             break;
 
             case Configuration.ORIENTATION_LANDSCAPE:
-            gridColumns = 2;
+            gridColumns = 4;
             break;
         }
 
