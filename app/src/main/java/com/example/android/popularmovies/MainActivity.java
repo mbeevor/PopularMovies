@@ -52,6 +52,19 @@ public class MainActivity extends AppCompatActivity {
         movieListAdapter = new MovieAdapter(moviesList);
         recyclerView.setAdapter(movieListAdapter);
 
+        // set on item click listener to adapter
+        movieListAdapter.setOnItemClickListener(new MovieAdapter.OnItemClickListener() {
+
+            @Override
+            public void onClick(View view, int position) {
+
+                Movie selectedMovie = moviesList.get(position);
+                // TODO Arrrrrrrrrrghh!
+
+            }
+
+        });
+
         // hide empty text view
         emptyTextView.setVisibility(View.INVISIBLE);
 
@@ -59,13 +72,12 @@ public class MainActivity extends AppCompatActivity {
         loadMovieData();
     }
 
-
     private void loadMovieData() {
 
         /* TODO: update this to a separate method and replace 'getPopular' with variable to be determined
         * by selection of popular or top-rated
          */
-        URL getSearchUrl = NetworkUtils.buildUrl(PopularMoviesPreferences.getPopular());
+        URL getSearchUrl = NetworkUtils.buildUrl(PopularMoviesPreferences.getTopRated());
         new GetMovieDataTask().execute(getSearchUrl);
 
     }
@@ -92,12 +104,12 @@ public class MainActivity extends AppCompatActivity {
         switch (getResources().getConfiguration().orientation) {
 
             case Configuration.ORIENTATION_PORTRAIT:
-            gridColumns = 2;
-            break;
+                gridColumns = 2;
+                break;
 
             case Configuration.ORIENTATION_LANDSCAPE:
-            gridColumns = 4;
-            break;
+                gridColumns = 4;
+                break;
         }
 
         return gridColumns;
@@ -121,8 +133,8 @@ public class MainActivity extends AppCompatActivity {
 
             try {
 
-            queryResult = NetworkUtils.getResponseFromHttpUrl(queryUrl);
-            return QueryUtils.getSimpleMovieQueryStringFromJson(queryResult);
+                queryResult = NetworkUtils.getResponseFromHttpUrl(queryUrl);
+                return QueryUtils.getSimpleMovieQueryStringFromJson(queryResult);
 
 
             } catch (IOException e) {

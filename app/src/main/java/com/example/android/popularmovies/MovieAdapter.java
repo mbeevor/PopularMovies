@@ -16,8 +16,19 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
     public List<Movie> moviesList;
+    private OnItemClickListener clickListener;
 
-    // default constructor
+
+    // interface for listener
+    public interface OnItemClickListener {
+        void onClick(View view, int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        clickListener = listener;
+    }
+
+    // default constructor with click listener
     public MovieAdapter(List<Movie> objects) {
 
         moviesList = objects;
@@ -32,7 +43,19 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         public MovieAdapterViewHolder(View view) {
             super(view);
             posterImageView = view.findViewById(R.id.movie_icon_iv);
-            // TODO: add on-click listener for each item here
+            view.setOnClickListener(new View.OnClickListener() {
+
+
+                @Override
+                public void onClick(View view) {
+
+                    int adapterPosition = getAdapterPosition();
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        clickListener.onClick(itemView, adapterPosition);
+                    }
+                }
+
+            });
         }
 
     }
@@ -80,5 +103,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         moviesList = movieData;
         notifyDataSetChanged();
     }
+
 
 }
