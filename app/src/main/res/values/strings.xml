@@ -3,4 +3,9 @@
 
     <!-- Text to display when nothing to show -->
     <string name="empty_view">No movies to show - check your network connection.</string>
+
+    <!-- Toast messages for showing most popular and top rated movies-->
+    <string name="show_most_popular">Showing most popular movies</string>
+    <string name="show_top_rated">Showing top rated movies</string>
+
 </resources>

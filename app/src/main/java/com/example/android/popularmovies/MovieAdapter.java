@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.data.PopularMoviesPreferences;
-import com.example.android.popularmovies.utlities.QueryUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
     public List<Movie> moviesList;
-    private Context context;
     private OnItemClickListener clickListener;
 
 
@@ -32,40 +30,41 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     // default constructor with click listener
-    public MovieAdapter(Context currentContext, List<Movie> movies) {
+    public MovieAdapter(List<Movie> movies, OnItemClickListener listener) {
 
-        context = currentContext;
+        clickListener = listener;
         moviesList = movies;
 
     }
 
-    // method to access context object in recyclerview
-    private Context getContext() {
-        return context;
-    }
-
     // create viewHolder class that extends the RecylcerView ViewHolder
-    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
+    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView movieTitleView;
         public ImageView posterImageView;
 
         public MovieAdapterViewHolder(final View itemView) {
+
             super(itemView);
             posterImageView = itemView.findViewById(R.id.movie_icon_iv);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (clickListener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            clickListener.onItemClick(itemView, position);
-                        }
-                    }
-                }
-            });
+            movieTitleView = itemView.findViewById(R.id.movie_title_tv);
+
+            itemView.setOnClickListener(this);
         }
-    }
+
+
+        @Override
+        public void onClick(View view) {
+
+            if (moviesList != null) {
+                int position = getAdapterPosition();
+                if (position != RecyclerView.NO_POSITION) {
+                    clickListener.onItemClick(itemView, position);
+                }
+            }
+        }
+
+        }
 
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

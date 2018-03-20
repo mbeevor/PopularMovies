@@ -2,12 +2,14 @@ package com.example.android.popularmovies;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -23,7 +25,7 @@ import java.net.URL;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.OnItemClickListener{
 
 
     private RecyclerView recyclerView;
@@ -31,12 +33,46 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private MovieAdapter movieListAdapter;
     public List<Movie> moviesList;
+    public String searchUrl;
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_preference, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        // update Search URL to show most popular results
+        if (id == R.id.by_popular) {
+            searchUrl = PopularMoviesPreferences.getPopular();
+            loadMovieData(searchUrl);
+            Toast.makeText(this, R.string.show_most_popular, Toast.LENGTH_SHORT).show();
+        }
+
+        // update Search URL to show top rated results
+        if (id == R.id.top_rated) {
+            searchUrl = PopularMoviesPreferences.getTopRated();
+            loadMovieData(searchUrl);
+            Toast.makeText(this, R.string.show_top_rated, Toast.LENGTH_SHORT).show();
+
+        }
+
+        return super.onOptionsItemSelected(item);
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // set default search to popular movies
+        searchUrl = PopularMoviesPreferences.getPopular();
 
         // find and assign IDs to views
         recyclerView = findViewById(R.id.recyclerview_grid);
@@ -52,35 +88,20 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
         // set recyclerView to image adapter
-        movieListAdapter = new MovieAdapter(this, moviesList);
+        movieListAdapter = new MovieAdapter(moviesList, null);
         recyclerView.setAdapter(movieListAdapter);
-
-        // set on item click listener to adapter
-        movieListAdapter.setOnItemClickListener(new MovieAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(View itemView, int position) {
-
-                String posterImage = "poster image here";
-
-                Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
-                detailActivityIntent.putExtra(posterImage, posterImage);
-                startActivity(detailActivityIntent);
-            }
-        });
 
         // hide empty text view
         emptyTextView.setVisibility(View.INVISIBLE);
 
         // call loadMovieData method
-        loadMovieData();
+        loadMovieData(searchUrl);
     }
 
-    private void loadMovieData() {
+    private void loadMovieData(String searchUrl) {
 
-        /* TODO: update this to a separate method and replace 'getPopular' with variable to be determined
-        * by selection of popular or top-rated
-         */
-        URL getSearchUrl = NetworkUtils.buildUrl(PopularMoviesPreferences.getTopRated());
+        // Return results based on onOptionsItem selected - default is popular
+        URL getSearchUrl = NetworkUtils.buildUrl(searchUrl);
         new GetMovieDataTask().execute(getSearchUrl);
 
     }
@@ -116,6 +137,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return gridColumns;
+
+    }
+
+    @Override
+    public void onItemClick(View itemView, int position) {
+
+        String movie = moviesList.get(position).getMovieTitle();
+        Toast.makeText(MainActivity.this, movie + "clicked", Toast.LENGTH_SHORT).show();
+
+        Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
+//                detailActivityIntent.putExtra(posterImage, posterImage);
+        startActivity(detailActivityIntent);
 
     }
 
