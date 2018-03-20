@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.data.PopularMoviesPreferences;
+import com.example.android.popularmovies.utlities.QueryUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -16,12 +18,13 @@ import java.util.List;
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
     public List<Movie> moviesList;
+    private Context context;
     private OnItemClickListener clickListener;
 
 
     // interface for listener
     public interface OnItemClickListener {
-        void onClick(View view, int position);
+        void onItemClick(View itemView, int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -29,35 +32,39 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     // default constructor with click listener
-    public MovieAdapter(List<Movie> objects) {
+    public MovieAdapter(Context currentContext, List<Movie> movies) {
 
-        moviesList = objects;
+        context = currentContext;
+        moviesList = movies;
 
+    }
+
+    // method to access context object in recyclerview
+    private Context getContext() {
+        return context;
     }
 
     // create viewHolder class that extends the RecylcerView ViewHolder
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
 
+        public TextView movieTitleView;
         public ImageView posterImageView;
 
-        public MovieAdapterViewHolder(View view) {
-            super(view);
-            posterImageView = view.findViewById(R.id.movie_icon_iv);
-            view.setOnClickListener(new View.OnClickListener() {
-
-
+        public MovieAdapterViewHolder(final View itemView) {
+            super(itemView);
+            posterImageView = itemView.findViewById(R.id.movie_icon_iv);
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
-                    int adapterPosition = getAdapterPosition();
-                    if (adapterPosition != RecyclerView.NO_POSITION) {
-                        clickListener.onClick(itemView, adapterPosition);
+                    if (clickListener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            clickListener.onItemClick(itemView, position);
+                        }
                     }
                 }
-
             });
         }
-
     }
 
     @Override
@@ -75,16 +82,19 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public void onBindViewHolder(MovieAdapterViewHolder holder, int position) {
 
+        // get the data model based on position
         Movie movie = moviesList.get(position);
+
+        // set item views based on views and data model
         String moviePoster = movie.getPosterImage();
-        MovieAdapterViewHolder imageAdapterViewHolder = holder;
-        Context context = imageAdapterViewHolder.posterImageView.getContext();
+        MovieAdapterViewHolder movieAdapterViewHolder = holder;
+        Context context = movieAdapterViewHolder.posterImageView.getContext();
 
         String posterImageUrl = PopularMoviesPreferences.getImageBaseUrl() + moviePoster;
 
         Picasso.with(context)
                 .load(posterImageUrl)
-                .into(imageAdapterViewHolder.posterImageView);
+                .into(movieAdapterViewHolder.posterImageView);
 
     }
 

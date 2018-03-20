@@ -1,6 +1,8 @@
 package com.example.android.popularmovies;
 
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.data.PopularMoviesPreferences;
@@ -49,20 +52,20 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
         // set recyclerView to image adapter
-        movieListAdapter = new MovieAdapter(moviesList);
+        movieListAdapter = new MovieAdapter(this, moviesList);
         recyclerView.setAdapter(movieListAdapter);
 
         // set on item click listener to adapter
         movieListAdapter.setOnItemClickListener(new MovieAdapter.OnItemClickListener() {
-
             @Override
-            public void onClick(View view, int position) {
+            public void onItemClick(View itemView, int position) {
 
-                Movie selectedMovie = moviesList.get(position);
-                // TODO Arrrrrrrrrrghh!
+                String posterImage = "poster image here";
 
+                Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
+                detailActivityIntent.putExtra(posterImage, posterImage);
+                startActivity(detailActivityIntent);
             }
-
         });
 
         // hide empty text view

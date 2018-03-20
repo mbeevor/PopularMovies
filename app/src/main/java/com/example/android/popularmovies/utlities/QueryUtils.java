@@ -17,6 +17,10 @@ import java.util.List;
 
 public class QueryUtils {
 
+    private static final String TITLE = "title";
+    private static final String RESULTS = "results";
+    private static final String POSTER_PATH = "poster_path";
+
     public static List<Movie> getSimpleMovieQueryStringFromJson(String movieJson) {
 
         if (TextUtils.isEmpty(movieJson)) {
@@ -30,13 +34,13 @@ public class QueryUtils {
 
             JSONObject moviesJson = new JSONObject(movieJson);
 
-            JSONArray moviesArray = moviesJson.getJSONArray("results");
+            JSONArray moviesArray = moviesJson.getJSONArray(RESULTS);
 
             for (int i = 0; 1 <moviesArray.length(); i++) {
                 JSONObject currentMovie = moviesArray.getJSONObject(i);
 
-                String movieTitle = currentMovie.getString("title");
-                String posterImage = currentMovie.getString("poster_path");
+                String movieTitle = currentMovie.getString(TITLE);
+                String posterImage = currentMovie.getString(POSTER_PATH);
 
                 Movie movie = new Movie(movieTitle, posterImage);
                 movies.add(movie);
