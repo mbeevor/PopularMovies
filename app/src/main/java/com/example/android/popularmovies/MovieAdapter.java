@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.data.PopularMoviesPreferences;
@@ -17,7 +16,7 @@ import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
 
-    public List<Movie> moviesList;
+    private List<Movie> moviesList;
     private Context context;
     private OnItemClickHandler clickHandler;
 
@@ -100,15 +99,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     // create viewHolder class that extends the RecyclerView ViewHolder
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public TextView movieTitleView;
         public ImageView posterImageView;
 
         public MovieAdapterViewHolder(final View itemView) {
 
             super(itemView);
             posterImageView = itemView.findViewById(R.id.movie_icon_iv);
-            movieTitleView = itemView.findViewById(R.id.movie_title_tv);
-
             itemView.setOnClickListener(this);
         }
 

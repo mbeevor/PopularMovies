@@ -23,12 +23,12 @@ import java.util.Date;
 
 public class DetailActivity extends AppCompatActivity {
 
-    public ImageView movieBackdrop;
-    public TextView movieTitle;
-    public TextView movieRelease;
-    public TextView movieDescription;
-    public String formattedDate;
-    public TextView userRating;
+    private ImageView movieBackdrop;
+    private TextView movieTitle;
+    private TextView movieRelease;
+    private TextView movieDescription;
+    private String formattedDate;
+    private TextView userRating;
 
 
     @Override

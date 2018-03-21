@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView emptyTextView;
     private ProgressBar progressBar;
     private MovieAdapter movieListAdapter;
-    public List<Movie> moviesList;
-    public String searchUrl;
+    private List<Movie> moviesList;
+    private String searchUrl;
 
 
     @Override
@@ -90,20 +90,6 @@ public class MainActivity extends AppCompatActivity {
 
         // call loadMovieData method
         loadMovieData(searchUrl);
-    }
-
-    // TODO: this doesn't work
-    // maintain search preference on rotate or pressing back
-    @Override
-    protected void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putString("searchUrl", searchUrl);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        searchUrl = savedInstanceState.getString("searchUrl");
     }
 
     @Override

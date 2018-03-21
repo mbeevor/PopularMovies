@@ -30,7 +30,7 @@ public class Movie implements Parcelable {
     }
 
     // parcelable constructor
-    public Movie(Parcel parcel) {
+    private Movie(Parcel parcel) {
 
         movieTitle = parcel.readString();
         posterImage = parcel.readString();
