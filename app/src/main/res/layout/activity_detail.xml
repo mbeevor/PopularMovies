@@ -10,17 +10,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/movie_backdrop_iv"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="0dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        <ImageView
+            android:id="@+id/movie_backdrop_iv"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/movie_title_tv"
@@ -32,64 +32,66 @@
             android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp"
             app:layout_constraintEnd_toStartOf="@+id/user_rating_label"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/movie_backdrop_iv"
             tools:text="Name of Movie"/>
 
 
-    <TextView
-        android:id="@+id/release_date_tv"
-        android:layout_width="181dp"
-        android:layout_height="19dp"
-        android:text="Year"
-        android:textColor="@color/colorAccent"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@+id/movie_title_tv"
-        app:layout_constraintTop_toBottomOf="@+id/movie_title_tv"/>
+        <TextView
+            android:id="@+id/release_date_tv"
+            android:layout_width="181dp"
+            android:layout_height="38dp"
+            android:text="Year"
+            android:textColor="@color/colorAccent"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@+id/movie_title_tv"
+            app:layout_constraintTop_toBottomOf="@+id/movie_title_tv"/>
 
-    <TextView
-        android:id="@+id/movie_description_tv"
-        android:layout_width="356dp"
-        android:layout_height="216dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:paddingTop="8dp"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/release_date_tv"
-        app:layout_constraintTop_toBottomOf="@+id/release_date_tv"
-        app:layout_constraintVertical_bias="0.652"
-        tools:text="Description of movie"/>
+        <TextView
+            android:id="@+id/movie_description_tv"
+            android:layout_width="352dp"
+            android:layout_height="223dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:paddingTop="8dp"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/release_date_tv"
+            app:layout_constraintTop_toBottomOf="@+id/release_date_tv"
+            app:layout_constraintVertical_bias="1.0"
+            tools:text="Description of movie"/>
 
-    <TextView
-        android:id="@+id/user_rating_label"
-        android:layout_width="109dp"
-        android:layout_height="34dp"
-        android:layout_marginRight="16dp"
-        android:gravity="center"
-        android:paddingTop="8dp"
-        android:text="@string/user_rating"
-        android:textColor="@color/colorPrimary"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/movie_backdrop_iv"/>
+        <TextView
+            android:id="@+id/user_rating_label"
+            android:layout_width="109dp"
+            android:layout_height="34dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center"
+            android:paddingTop="8dp"
+            android:text="@string/user_rating"
+            android:textColor="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/movie_backdrop_iv"/>
 
-    <TextView
-        android:id="@+id/user_rating_tv"
-        android:layout_width="108dp"
-        android:layout_height="37dp"
-        android:layout_marginLeft="8dp"
-        android:background="@color/colorAccent"
-        android:gravity="center"
-        android:text="0.0"
-        android:textColor="@android:color/white"
-        app:layout_constraintEnd_toEndOf="@+id/user_rating_label"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/user_rating_label"
-        app:layout_constraintTop_toBottomOf="@+id/user_rating_label"
-        />
+        <TextView
+            android:id="@+id/user_rating_tv"
+            android:layout_width="108dp"
+            android:layout_height="37dp"
+            android:layout_marginLeft="8dp"
+            android:background="@color/colorAccent"
+            android:gravity="center"
+            android:text="0.0"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toEndOf="@+id/user_rating_label"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="@+id/user_rating_label"
+            app:layout_constraintTop_toBottomOf="@+id/user_rating_label"
+            />
 
 
-</android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
 </ScrollView>
