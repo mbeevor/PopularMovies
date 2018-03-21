@@ -8,6 +8,10 @@ android {
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
+
+        // ensure you have your own API key to run this app
+        buildConfigField("String", "API_KEY", API_KEY)
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

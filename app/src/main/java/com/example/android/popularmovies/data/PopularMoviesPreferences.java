@@ -1,13 +1,14 @@
 package com.example.android.popularmovies.data;
 
+import com.example.android.popularmovies.BuildConfig;
+
 /**
  * Created by Matthew on 15/03/2018.
  */
 
 public class PopularMoviesPreferences {
 
-    // TODO: replace API_KEY with your own working key
-    private static final String API_KEY = "API_KEY";
+    private static final String API_KEY = BuildConfig.API_KEY;
 
     private static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
     private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w500";
