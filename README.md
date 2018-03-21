@@ -20,3 +20,5 @@ https://antonioleiva.com/recyclerview-listener/
 
 Using the RecyclerView
 https://guides.codepath.com/android/using-the-recyclerview 
+
+Extracting out your AsyncTask http://www.jameselsey.co.uk/blogs/techblog/extracting-out-your-asynctasks-into-separate-classes-makes-your-code-cleaner/
