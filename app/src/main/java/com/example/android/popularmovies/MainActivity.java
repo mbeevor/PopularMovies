@@ -1,8 +1,10 @@
 package com.example.android.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.AsyncTask;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,10 +19,10 @@ import android.widget.Toast;
 
 import com.example.android.popularmovies.data.Movie;
 import com.example.android.popularmovies.data.PopularMoviesPreferences;
+import com.example.android.popularmovies.tools.AsyncTaskListener;
+import com.example.android.popularmovies.tools.GetMovieDataTask;
 import com.example.android.popularmovies.utlities.NetworkUtils;
-import com.example.android.popularmovies.utlities.QueryUtils;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView emptyTextView;
     private ProgressBar progressBar;
     private MovieAdapter movieListAdapter;
-    private List<Movie> moviesList;
+    public List<Movie> moviesList;
     private String searchUrl;
 
 
@@ -50,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerview_grid);
         emptyTextView = findViewById(R.id.empty_view);
         progressBar = findViewById(R.id.progress_bar);
-
 
         // create GridLayoutManager
         RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(this, setGridColumns());
@@ -78,18 +79,36 @@ public class MainActivity extends AppCompatActivity {
         });
         recyclerView.setAdapter(movieListAdapter);
 
-        recyclerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loadMovieData(searchUrl);
-            }
-        });
+        // check app is connected to the internet
+        ConnectivityManager cm =
+                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        // hide empty text view
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+
+        // hide empty text view and show Progress bar
         emptyTextView.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
 
-        // call loadMovieData method
-        loadMovieData(searchUrl);
+
+        if (isConnected == true) {
+
+            recyclerView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    loadMovieData(searchUrl);
+                }
+            });
+
+            // call loadMovieData method
+            loadMovieData(searchUrl);
+
+        } else {
+
+            showErrorView();
+
+        }
     }
 
     @Override
@@ -127,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Return results based on onOptionsItem selected - default is popular
         URL getSearchUrl = NetworkUtils.buildUrl(searchUrl);
-        new GetMovieDataTask().execute(getSearchUrl);
+        new GetMovieDataTask(new GetMovieDataTaskListener()).execute(getSearchUrl);
 
     }
 
@@ -136,6 +155,8 @@ public class MainActivity extends AppCompatActivity {
         // hide the error message and show the recycler view
         emptyTextView.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
+
     }
 
     private void showErrorView() {
@@ -143,6 +164,8 @@ public class MainActivity extends AppCompatActivity {
         // hide the recycler view and show the error message text view
         recyclerView.setVisibility(View.INVISIBLE);
         emptyTextView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.INVISIBLE);
+
     }
 
     // method to calculate size of Grid based on device configuration
@@ -165,58 +188,25 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public class GetMovieDataTask extends AsyncTask<URL, Void, List<Movie>> {
+    public class GetMovieDataTaskListener implements AsyncTaskListener<Movie> {
 
-        // show progress bar whilst AsyncTask is running
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-        }
 
         @Override
-        protected List<Movie> doInBackground(URL... params) {
+        public void onTaskComplete(Movie moviesList) {
 
-            try {
-
-                if (params != null) {
-
-                    URL queryUrl = params[0];
-                    String queryResult;
-
-                    queryResult = NetworkUtils.getResponseFromHttpUrl(queryUrl);
-                    if (queryResult != null) {
-
-                        moviesList = QueryUtils.getSimpleMovieQueryStringFromJson(queryResult);
-                        return moviesList;
-                    }
-
-                }
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return moviesList;
-        }
-
-        @Override
-        protected void onPostExecute(List<Movie> movieData) {
-
-            /* on completion of AsyncTask, hide the progress bar and
+             /* on completion of AsyncTask, hide the progress bar and
             * either show the movie data,
             * or an error message if there is no data
              */
-            progressBar.setVisibility(View.INVISIBLE);
-
-            if (movieData != null) {
+            if (moviesList != null) {
                 showMovieDataView();
-                movieListAdapter.updateMovieData(movieData);
+                movieListAdapter.updateMovieData((List<Movie>) moviesList);
             } else {
                 showErrorView();
             }
 
         }
     }
+
 
 }
