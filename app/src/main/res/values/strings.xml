@@ -8,4 +8,7 @@
     <string name="show_most_popular">Showing most popular movies</string>
     <string name="show_top_rated">Showing top rated movies</string>
 
+    <!-- Strings for detail activity -->
+    <string name="user_rating">User Rating</string>
+
 </resources>

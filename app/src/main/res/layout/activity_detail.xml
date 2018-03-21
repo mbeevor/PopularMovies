@@ -1,14 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/movie_backdrop_iv"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/movie_title_tv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="244dp"
+        android:layout_height="37dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:paddingTop="8dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@+id/editText2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/movie_backdrop_iv"
         tools:text="Name of Movie"/>
+
+
+    <TextView
+        android:id="@+id/release_date_tv"
+        android:layout_width="181dp"
+        android:layout_height="19dp"
+        android:text="Year"
+        android:textColor="@color/colorAccent"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/movie_title_tv"
+        app:layout_constraintTop_toBottomOf="@+id/movie_title_tv"/>
+
+    <TextView
+        android:id="@+id/movie_description_tv"
+        android:layout_width="356dp"
+        android:layout_height="223dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:paddingTop="8dp"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/release_date_tv"
+        app:layout_constraintTop_toBottomOf="@+id/release_date_tv"
+        tools:text="Description of movie"/>
+
+    <TextView
+        android:id="@+id/user_rating_label"
+        android:layout_width="109dp"
+        android:layout_height="34dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:paddingTop="8dp"
+        android:text="@string/user_rating"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/movie_backdrop_iv"/>
+
+    <TextView
+        android:id="@+id/user_rating_tv"
+        android:layout_width="108dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="8dp"
+        android:background="@color/colorAccent"
+        android:gravity="center"
+        android:text="0.0"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="@+id/user_rating_label"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/user_rating_label"
+        app:layout_constraintTop_toBottomOf="@+id/user_rating_label"
+        />
+
 
 </android.support.constraint.ConstraintLayout>

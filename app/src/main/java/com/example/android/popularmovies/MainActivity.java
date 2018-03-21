@@ -25,7 +25,7 @@ import java.net.URL;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements MovieAdapter.OnItemClickListener{
+public class MainActivity extends AppCompatActivity {
 
 
     private RecyclerView recyclerView;
@@ -35,6 +35,76 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnIt
     public List<Movie> moviesList;
     public String searchUrl;
 
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // set default search to popular movies if not already selected
+        if (searchUrl == null || searchUrl.isEmpty()) {
+            searchUrl = PopularMoviesPreferences.getPopular();
+        }
+
+        // find and assign IDs to views
+        recyclerView = findViewById(R.id.recyclerview_grid);
+        emptyTextView = findViewById(R.id.empty_view);
+        progressBar = findViewById(R.id.progress_bar);
+
+
+        // create GridLayoutManager
+        RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(this, setGridColumns());
+        recyclerView.setLayoutManager(gridLayoutManager);
+
+        // set recyclerView to have a fixed size so that all items in the list are the same size.
+        recyclerView.setHasFixedSize(true);
+
+        // set recyclerView to image adapter, passing in the OnItemClickHandler and Overriding what to do when clicked
+        movieListAdapter = new MovieAdapter(getApplicationContext(), new MovieAdapter.OnItemClickHandler() {
+            @Override
+            public void onItemClick(View item, int position) {
+
+                Movie movie = new Movie(moviesList.get(position).getMovieTitle(),
+                        moviesList.get(position).getPosterImage(),
+                        moviesList.get(position).getBackdropImage(),
+                        moviesList.get(position).getMovieOverview(),
+                        moviesList.get(position).getMovieReleaseDate(),
+                        moviesList.get(position).getMovieRating());
+                Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
+                detailActivityIntent.putExtra("movie", movie);
+                startActivity(detailActivityIntent);
+
+            }
+        });
+        recyclerView.setAdapter(movieListAdapter);
+
+        recyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadMovieData(searchUrl);
+            }
+        });
+
+        // hide empty text view
+        emptyTextView.setVisibility(View.INVISIBLE);
+
+        // call loadMovieData method
+        loadMovieData(searchUrl);
+    }
+
+    // TODO: this doesn't work
+    // maintain search preference on rotate or pressing back
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString("searchUrl", searchUrl);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        searchUrl = savedInstanceState.getString("searchUrl");
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -66,37 +136,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        // set default search to popular movies
-        searchUrl = PopularMoviesPreferences.getPopular();
-
-        // find and assign IDs to views
-        recyclerView = findViewById(R.id.recyclerview_grid);
-        emptyTextView = findViewById(R.id.empty_view);
-        progressBar = findViewById(R.id.progress_bar);
-
-
-        // create GridLayoutManager
-        RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(this, setGridColumns());
-        recyclerView.setLayoutManager(gridLayoutManager);
-
-        // set recyclerView to have a fixed size so that all items in the list are the same size.
-        recyclerView.setHasFixedSize(true);
-
-        // set recyclerView to image adapter
-        movieListAdapter = new MovieAdapter(moviesList, null);
-        recyclerView.setAdapter(movieListAdapter);
-
-        // hide empty text view
-        emptyTextView.setVisibility(View.INVISIBLE);
-
-        // call loadMovieData method
-        loadMovieData(searchUrl);
-    }
 
     private void loadMovieData(String searchUrl) {
 
@@ -140,18 +179,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
     }
 
-    @Override
-    public void onItemClick(View itemView, int position) {
-
-        String movie = moviesList.get(position).getMovieTitle();
-        Toast.makeText(MainActivity.this, movie + "clicked", Toast.LENGTH_SHORT).show();
-
-        Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
-//                detailActivityIntent.putExtra(posterImage, posterImage);
-        startActivity(detailActivityIntent);
-
-    }
-
     public class GetMovieDataTask extends AsyncTask<URL, Void, List<Movie>> {
 
         // show progress bar whilst AsyncTask is running
@@ -164,19 +191,27 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnIt
         @Override
         protected List<Movie> doInBackground(URL... params) {
 
-            URL queryUrl = params[0];
-            String queryResult;
-
             try {
 
-                queryResult = NetworkUtils.getResponseFromHttpUrl(queryUrl);
-                return QueryUtils.getSimpleMovieQueryStringFromJson(queryResult);
+                if (params != null) {
+
+                    URL queryUrl = params[0];
+                    String queryResult;
+
+                    queryResult = NetworkUtils.getResponseFromHttpUrl(queryUrl);
+                    if (queryResult != null) {
+
+                        moviesList = QueryUtils.getSimpleMovieQueryStringFromJson(queryResult);
+                        return moviesList;
+                    }
+
+                }
 
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return null;
+            return moviesList;
         }
 
         @Override
@@ -197,4 +232,5 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.OnIt
 
         }
     }
+
 }
