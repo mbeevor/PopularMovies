@@ -11,6 +11,7 @@ public class Movie implements Parcelable {
 
     private String movieTitle;
     private String posterImage;
+    private String movieId;
     private String backdropImage;
     private String movieOverview;
     private String movieReleaseDate;
@@ -19,10 +20,11 @@ public class Movie implements Parcelable {
 
 
     // main constructor for creating a movie
-    public Movie(String title, String imageUrl, String backdrop, String overview, String releaseDate, String voteAverage) {
+    public Movie(String title, String imageUrl, String id, String backdrop, String overview, String releaseDate, String voteAverage) {
 
         movieTitle = title;
         posterImage = imageUrl;
+        movieId = id;
         backdropImage = backdrop;
         movieOverview = overview;
         movieReleaseDate = releaseDate;
@@ -34,6 +36,7 @@ public class Movie implements Parcelable {
 
         movieTitle = parcel.readString();
         posterImage = parcel.readString();
+        movieId = parcel.readString();
         backdropImage = parcel.readString();
         movieOverview = parcel.readString();
         movieReleaseDate = parcel.readString();
@@ -47,6 +50,10 @@ public class Movie implements Parcelable {
 
     public String getPosterImage() {
         return posterImage;
+    }
+
+    public String getMovieId() {
+        return movieId;
     }
 
     public String getBackdropImage() {
@@ -75,6 +82,7 @@ public class Movie implements Parcelable {
 
         dest.writeString(movieTitle);
         dest.writeString(posterImage);
+        dest.writeString(movieId);
         dest.writeString(backdropImage);
         dest.writeString(movieOverview);
         dest.writeString(movieReleaseDate);

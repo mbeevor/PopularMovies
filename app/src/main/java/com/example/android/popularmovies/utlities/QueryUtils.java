@@ -20,6 +20,7 @@ public class QueryUtils {
     private static final String TITLE = "title";
     private static final String RESULTS = "results";
     private static final String POSTER_PATH = "poster_path";
+    private static final String MOVIE_ID = "id";
     private static final String BACKDROP_PATH = "backdrop_path";
     private static final String OVERVIEW = "overview";
     private static final String RELEASE_DATE = "release_date";
@@ -45,12 +46,13 @@ public class QueryUtils {
 
                 String movieTitle = currentMovie.getString(TITLE);
                 String posterImage = currentMovie.getString(POSTER_PATH);
+                String movieId = currentMovie.getString(MOVIE_ID);
                 String backdropImage = currentMovie.getString(BACKDROP_PATH);
                 String movieOverview = currentMovie.getString(OVERVIEW);
                 String movieReleaseDate = currentMovie.getString(RELEASE_DATE);
                 String movieRating = currentMovie.getString(VOTE_AVERAGE);
 
-                Movie movie = new Movie(movieTitle, posterImage, backdropImage, movieOverview, movieReleaseDate, movieRating);
+                Movie movie = new Movie(movieTitle, posterImage, movieId, backdropImage, movieOverview, movieReleaseDate, movieRating);
                 movies.add(movie);
             }
 

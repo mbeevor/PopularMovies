@@ -64,12 +64,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(View item, int position) {
 
-                Movie movie = new Movie(moviesList.get(position).getMovieTitle(),
-                        moviesList.get(position).getPosterImage(),
-                        moviesList.get(position).getBackdropImage(),
-                        moviesList.get(position).getMovieOverview(),
-                        moviesList.get(position).getMovieReleaseDate(),
-                        moviesList.get(position).getMovieRating());
+                Movie moviePosition = moviesList.get(position);
+                Movie movie = new Movie(moviePosition.getMovieTitle(),
+                        moviePosition.getPosterImage(),
+                        moviePosition.getMovieId(),
+                        moviePosition.getBackdropImage(),
+                        moviePosition.getMovieOverview(),
+                        moviePosition.getMovieReleaseDate(),
+                        moviePosition.getMovieRating());
                 Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
                 detailActivityIntent.putExtra("movie", movie);
                 startActivity(detailActivityIntent);

@@ -1,11 +1,14 @@
 package com.example.android.popularmovies;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,7 +31,7 @@ public class DetailActivity extends AppCompatActivity {
     private TextView movieRelease;
     private TextView movieDescription;
     private String formattedDate;
-    private TextView userRating;
+    private Button userRating;
 
 
     @Override
@@ -41,11 +44,11 @@ public class DetailActivity extends AppCompatActivity {
         movieTitle = findViewById(R.id.movie_title_tv);
         movieRelease = findViewById(R.id.release_date_tv);
         movieDescription = findViewById(R.id.movie_description_tv);
-        userRating = findViewById(R.id.user_rating_tv);
+        userRating = findViewById(R.id.user_rating_button);
 
         // get data from MainActivity
         Intent intent = getIntent();
-        Movie movie = intent.getParcelableExtra("movie");
+        final Movie movie = intent.getParcelableExtra("movie");
 
         // convert JSON date to readable Year
         String JSONdate = movie.getMovieReleaseDate();
@@ -83,5 +86,22 @@ public class DetailActivity extends AppCompatActivity {
 
         }
 
+        userRating.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String reviewUrl = PopularMoviesPreferences.getBaseUrl() + movie.getMovieId() + "/reviews?" + PopularMoviesPreferences.getApiKey();
+                Intent reviewIntent = new Intent(Intent.ACTION_VIEW);
+                reviewIntent.setData(Uri.parse(reviewUrl));
+                startActivity(reviewIntent);
+
+            }
+        });
+
+        // get movie ID and assign to getReview
+
+
     }
+
+
 }
