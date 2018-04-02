@@ -25,7 +25,7 @@
         <TextView
             android:id="@+id/movie_title_tv"
             android:layout_width="430dp"
-            android:layout_height="37dp"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginStart="16dp"
             android:paddingTop="8dp"
@@ -40,8 +40,8 @@
 
         <TextView
             android:id="@+id/release_date_tv"
-            android:layout_width="181dp"
-            android:layout_height="38dp"
+            android:layout_width="430dp"
+            android:layout_height="40dp"
             android:text="Year"
             android:textColor="@color/colorAccent"
             android:textSize="14sp"
@@ -62,12 +62,12 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/release_date_tv"
             app:layout_constraintTop_toBottomOf="@+id/release_date_tv"
-            tools:text="Description of movie"/>
+            tools:text="@string/description_tools_text"/>
 
         <TextView
             android:id="@+id/user_rating_label"
             android:layout_width="109dp"
-            android:layout_height="34dp"
+            android:layout_height="40dp"
             android:layout_marginRight="16dp"
             android:gravity="center"
             android:paddingTop="8dp"
@@ -79,11 +79,11 @@
         <Button
             android:id="@+id/user_rating_button"
             android:layout_width="108dp"
-            android:layout_height="37dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="8dp"
             android:background="@color/colorAccent"
             android:gravity="center"
-            android:text="0.0"
+            android:text="@string/rating_tools_text"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="@+id/user_rating_label"
             app:layout_constraintHorizontal_bias="1.0"

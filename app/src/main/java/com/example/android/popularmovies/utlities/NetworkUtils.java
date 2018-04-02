@@ -2,7 +2,7 @@ package com.example.android.popularmovies.utlities;
 
 import android.net.Uri;
 
-import com.example.android.popularmovies.data.PopularMoviesPreferences;
+import com.example.android.popularmovies.model.PopularMoviesPreferences;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,12 +17,9 @@ import java.util.Scanner;
 
 public class NetworkUtils {
 
-    // the format we want the API to return
-    private static final String format = "json";
-
     public static final String baseUrl = PopularMoviesPreferences.getBaseUrl();
-    public static final String popular = PopularMoviesPreferences.getPopular();
-    public static final String topRated = PopularMoviesPreferences.getTopRated();
+    public static final String apiKeyBuilder = PopularMoviesPreferences.getApiBuilder();
+    public static final String reviewsString = PopularMoviesPreferences.getReviews();
     public static final String apiKey = PopularMoviesPreferences.getApiKey();
 
 
@@ -34,10 +31,25 @@ public class NetworkUtils {
      * @return The URL to query the API
      */
 
-    public static URL buildUrl(String typeOfQuery) {
+    public static URL queryUrl(String typeOfQuery) {
 
-        Uri builtUri = Uri.parse(baseUrl + typeOfQuery + "?api_key=" + apiKey).buildUpon()
+        Uri builtUri = Uri.parse(baseUrl + typeOfQuery + apiKeyBuilder + apiKey).buildUpon()
                                 .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    public static URL reviewUrl(String movieId) {
+
+       Uri builtUri = Uri.parse(baseUrl + movieId + reviewsString + apiKeyBuilder + apiKey).buildUpon()
+                .build();
 
         URL url = null;
         try {

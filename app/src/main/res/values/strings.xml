@@ -8,7 +8,18 @@
     <string name="show_most_popular">Showing most popular movies</string>
     <string name="show_top_rated">Showing top rated movies</string>
 
+    <!-- Placeholder text -->
+    <string name="description_tools_text">Description of movie</string>
+    <string name="rating_tools_text">0.0</string>
+    <string name="review_tools_text">Reviews of movie name</string>
+    <string name="review_author_text">Author name</string>
+    <string name="review_content_text">Content of review</string>
+
     <!-- Strings for detail activity -->
     <string name="user_rating">User Rating</string>
+
+    <!-- Strings for review activity -->
+    <string name="review_author">Author</string>
+    <string name="review_content">Review</string>
 
 </resources>

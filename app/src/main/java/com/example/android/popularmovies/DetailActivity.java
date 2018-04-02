@@ -1,19 +1,18 @@
 package com.example.android.popularmovies;
 
 import android.content.Intent;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.android.popularmovies.data.Movie;
-import com.example.android.popularmovies.data.PopularMoviesPreferences;
+import com.example.android.popularmovies.model.Movie;
+import com.example.android.popularmovies.model.PopularMoviesPreferences;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
@@ -50,58 +49,59 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         final Movie movie = intent.getParcelableExtra("movie");
 
-        // convert JSON date to readable Year
-        String JSONdate = movie.getMovieReleaseDate();
+        if (movie != null) {
 
-        try {
-            SimpleDateFormat currentDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date year = currentDateFormat.parse(JSONdate);
+            // convert JSON date to readable Year
+            String JSONdate = movie.getMovieReleaseDate();
 
-            SimpleDateFormat revisedDateFormat = new SimpleDateFormat("YYYY");
-            formattedDate = revisedDateFormat.format(year);
+            try {
+                SimpleDateFormat currentDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date year = currentDateFormat.parse(JSONdate);
 
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+                SimpleDateFormat revisedDateFormat = new SimpleDateFormat("YYYY");
+                formattedDate = revisedDateFormat.format(year);
 
-        // set views to data from MainActivity
-        movieTitle.setText(movie.getMovieTitle());
-        movieRelease.setText(formattedDate);
-        movieDescription.setText(movie.getMovieOverview());
-        userRating.setText(movie.getMovieRating());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
 
-        String backdropImage = movie.getBackdropImage();
+            // set views to data from MainActivity
+            movieTitle.setText(movie.getMovieTitle());
+            movieRelease.setText(formattedDate);
+            movieDescription.setText(movie.getMovieOverview());
+            userRating.setText(movie.getMovieRating());
 
-        // remove image view if there is no image
-        if (TextUtils.isEmpty(backdropImage)) {
-            movieBackdrop.setVisibility(View.GONE);
+            String backdropImage = movie.getBackdropImage();
 
-            // use Picasso for backdrop image
-        } else {
-            String backdropImageUrl = PopularMoviesPreferences.getImageBaseUrl() + backdropImage;
+            // remove image view if there is no image
+            if (TextUtils.isEmpty(backdropImage)) {
+                movieBackdrop.setVisibility(View.GONE);
 
-            Picasso.with(this)
-                    .load(backdropImageUrl)
-                    .into(movieBackdrop);
+                // use Picasso for backdrop image
+            } else {
+                String backdropImageUrl = PopularMoviesPreferences.getImageBaseUrl() + backdropImage;
 
-        }
-
-        userRating.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String reviewUrl = PopularMoviesPreferences.getBaseUrl() + movie.getMovieId() + "/reviews?" + PopularMoviesPreferences.getApiKey();
-                Intent reviewIntent = new Intent(Intent.ACTION_VIEW);
-                reviewIntent.setData(Uri.parse(reviewUrl));
-                startActivity(reviewIntent);
+                Picasso.with(this)
+                        .load(backdropImageUrl)
+                        .into(movieBackdrop);
 
             }
-        });
 
-        // get movie ID and assign to getReview
+            userRating.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    String movieId = movie.getMovieId();
+                    Intent reviewActivityIntent = new Intent(getApplicationContext(), ReviewActivity.class);
+                    reviewActivityIntent.putExtra("movieId", movieId);
+                    Log.v("movieID is  ", movieId);
+                    startActivity(reviewActivityIntent);
+
+                }
+            });
 
 
+        }
     }
-
 
 }

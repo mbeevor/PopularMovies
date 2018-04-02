@@ -2,7 +2,6 @@ package com.example.android.popularmovies;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,12 +14,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.popularmovies.data.Movie;
-import com.example.android.popularmovies.data.PopularMoviesPreferences;
+import com.example.android.popularmovies.adapters.MovieAdapter;
+import com.example.android.popularmovies.tasks.AsyncTaskListener;
+import com.example.android.popularmovies.tasks.GetMovieDataTask;
+import com.example.android.popularmovies.model.Movie;
+import com.example.android.popularmovies.model.PopularMoviesPreferences;
 import com.example.android.popularmovies.utlities.NetworkUtils;
-import com.example.android.popularmovies.utlities.QueryUtils;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView emptyTextView;
     private ProgressBar progressBar;
     private MovieAdapter movieListAdapter;
-    private List<Movie> moviesList;
+    public List<Movie> moviesList;
     private String searchUrl;
 
 
@@ -60,12 +60,15 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
         // set recyclerView to image adapter, passing in the OnItemClickHandler and Overriding what to do when clicked
-        movieListAdapter = new MovieAdapter(getApplicationContext(), new MovieAdapter.OnItemClickHandler() {
+        movieListAdapter = new MovieAdapter
+                (getApplicationContext(), new MovieAdapter.OnItemClickHandler() {
+
             @Override
             public void onItemClick(View item, int position) {
 
                 Movie moviePosition = moviesList.get(position);
-                Movie movie = new Movie(moviePosition.getMovieTitle(),
+                Movie movie = new Movie(
+                        moviePosition.getMovieTitle(),
                         moviePosition.getPosterImage(),
                         moviePosition.getMovieId(),
                         moviePosition.getBackdropImage(),
@@ -87,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // hide empty text view
+        // hide empty text view and show progress bar
+        progressBar.setVisibility(View.VISIBLE);
         emptyTextView.setVisibility(View.INVISIBLE);
 
         // call loadMovieData method
@@ -128,14 +132,16 @@ public class MainActivity extends AppCompatActivity {
     private void loadMovieData(String searchUrl) {
 
         // Return results based on onOptionsItem selected - default is popular
-        URL getSearchUrl = NetworkUtils.buildUrl(searchUrl);
-        new GetMovieDataTask().execute(getSearchUrl);
+        URL getSearchUrl = NetworkUtils.queryUrl(searchUrl);
+        new GetMovieDataTask(new GetMovieDataListener())
+                .execute(getSearchUrl);
 
     }
 
     private void showMovieDataView() {
 
         // hide the error message and show the recycler view
+        progressBar.setVisibility(View.INVISIBLE);
         emptyTextView.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.VISIBLE);
     }
@@ -143,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
     private void showErrorView() {
 
         // hide the recycler view and show the error message text view
+        progressBar.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.INVISIBLE);
         emptyTextView.setVisibility(View.VISIBLE);
     }
@@ -167,58 +174,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public class GetMovieDataTask extends AsyncTask<URL, Void, List<Movie>> {
+    public class GetMovieDataListener implements AsyncTaskListener {
 
-        // show progress bar whilst AsyncTask is running
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-        }
+       @Override
+        public void onTaskComplete(List<Movie> list) {
 
-        @Override
-        protected List<Movie> doInBackground(URL... params) {
+           moviesList = list;
 
-            try {
-
-                if (params != null) {
-
-                    URL queryUrl = params[0];
-                    String queryResult;
-
-                    queryResult = NetworkUtils.getResponseFromHttpUrl(queryUrl);
-                    if (queryResult != null) {
-
-                        moviesList = QueryUtils.getSimpleMovieQueryStringFromJson(queryResult);
-                        return moviesList;
-                    }
-
-                }
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return moviesList;
-        }
-
-        @Override
-        protected void onPostExecute(List<Movie> movieData) {
-
-            /* on completion of AsyncTask, hide the progress bar and
-            * either show the movie data,
-            * or an error message if there is no data
-             */
-            progressBar.setVisibility(View.INVISIBLE);
-
-            if (movieData != null) {
+            if (moviesList != null) {
                 showMovieDataView();
-                movieListAdapter.updateMovieData(movieData);
+                movieListAdapter.updateMovieData(moviesList);
             } else {
                 showErrorView();
             }
 
+
         }
     }
+
 
 }
