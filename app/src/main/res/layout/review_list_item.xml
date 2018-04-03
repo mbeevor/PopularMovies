@@ -4,38 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/review_author_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
         android:text="@string/review_author"
-        android:textColor="@color/colorPrimaryDark"
-        android:adjustViewBounds="true"/>
+        android:textColor="@color/colorPrimaryDark"/>
 
     <TextView
         android:id="@+id/review_author"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="review_author_text"
-        android:textColor="@android:color/black"
-        android:adjustViewBounds="true"/>
+        android:adjustViewBounds="true"
+        android:textColor="@color/colorPrimaryText"
+        tools:text="review_author_text"/>
 
     <TextView
         android:id="@+id/review_content_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
         android:text="@string/review_content"
-        android:textColor="@color/colorPrimaryDark"
-        android:adjustViewBounds="true"/>
+        android:textColor="@color/colorPrimaryDark"/>
 
     <TextView
         android:id="@+id/review_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="review_content_text"
-        android:textColor="@android:color/black"
-        android:adjustViewBounds="true"/>
+        android:adjustViewBounds="true"
+        android:textColor="@color/colorPrimaryText"
+        tools:text="review_content_text"/>
 
 </LinearLayout>

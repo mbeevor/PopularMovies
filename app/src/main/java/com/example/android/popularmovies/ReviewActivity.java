@@ -22,9 +22,9 @@ import java.util.List;
 
 public class ReviewActivity extends AppCompatActivity {
 
-    List<Review> reviewList;
+    List<Review> reviewsList;
     public String movieId;
-      ReviewAdapter reviewAdapter;
+    ReviewAdapter reviewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +35,8 @@ public class ReviewActivity extends AppCompatActivity {
         Intent intent = getIntent();
         movieId = intent.getExtras().getString("movieId");
 
-        reviewList = new ArrayList<>();
-        reviewAdapter = new ReviewAdapter(this, reviewList);
+        reviewsList = new ArrayList<>();
+        reviewAdapter = new ReviewAdapter(this, reviewsList);
         ListView listView = findViewById(R.id.review_listview);
         listView.setAdapter(reviewAdapter);
 
@@ -58,11 +58,14 @@ public class ReviewActivity extends AppCompatActivity {
         @Override
         public void onTaskComplete(List<Review> list) {
 
-            reviewList = list;
+            reviewsList = list;
 
-            if (reviewList != null) {
-                reviewAdapter.updateReviewData(list);
+            if (reviewsList != null) {
+
+                reviewAdapter.updateReviewData(reviewsList);
             }
+
+            reviewAdapter.addAll(reviewsList);
 
         }
     }

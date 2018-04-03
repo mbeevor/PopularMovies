@@ -23,35 +23,36 @@ public class ReviewAdapter extends ArrayAdapter<Review> {
 
     private List<Review> reviewsList;
 
-    public ReviewAdapter(@NonNull Context context, List<Review> reviewsList) {
+    public ReviewAdapter(@NonNull Context context, List<Review> list) {
 
-        super(context, 0, reviewsList);
+        super(context, 0, list);
     }
 
 
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
-        if (reviewsList != null) {
+        // get data for this position
+        Review review = getItem(position);
 
-            // get data for this position
-            Review review = reviewsList.get(position);
+        if (convertView == null) {
 
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View reviewView = inflater.inflate(R.layout.review_list_item, parent, false);
+            convertView = inflater.inflate(R.layout.review_list_item, parent, false);
 
-            TextView authorTv = reviewView.findViewById(R.id.review_author);
-            TextView contentTv = reviewView.findViewById(R.id.review_content);
-
-            authorTv.setText(review.getReviewAuthor());
-            contentTv.setText(review.getReviewContent());
-
-            return reviewView;
-
-        } else {
-
-            return null;
         }
+
+
+        // find IDs to assign views to
+        TextView authorTv = convertView.findViewById(R.id.review_author);
+        TextView contentTv = convertView.findViewById(R.id.review_content);
+
+        // update views to show movie review details
+        authorTv.setText(review.getReviewAuthor());
+        contentTv.setText(review.getReviewContent());
+
+        return convertView;
+
     }
 
     // notify the app that data has changed to refresh the view

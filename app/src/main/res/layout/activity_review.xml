@@ -1,38 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
         <TextView
             android:id="@+id/review_label"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:padding="8dp"
+            android:text="@string/review_heading_text"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="@string/review_tools_text"/>
+            />
+
 
         <ListView
             android:id="@+id/review_listview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/review_label"
-            tools:layout_editor_absoluteX="8dp"
-            tools:layout_editor_absoluteY="58dp"/>
+            />
 
+    </LinearLayout>
 
-    </android.support.constraint.ConstraintLayout>
-
-</ScrollView>

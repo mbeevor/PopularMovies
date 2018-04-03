@@ -9,6 +9,7 @@ import android.os.Parcelable;
 
 public class Review implements Parcelable {
 
+    private String movieTitle;
     private String reviewAuthor;
     private String reviewContent;
 
@@ -28,6 +29,7 @@ public class Review implements Parcelable {
         reviewContent = parcel.readString();
 
     }
+
 
     public String getReviewAuthor() {
         return reviewAuthor;

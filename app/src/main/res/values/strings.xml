@@ -11,15 +11,16 @@
     <!-- Placeholder text -->
     <string name="description_tools_text">Description of movie</string>
     <string name="rating_tools_text">0.0</string>
-    <string name="review_tools_text">Reviews of movie name</string>
+    <string name="review_heading_text">User Reviews</string>
     <string name="review_author_text">Author name</string>
     <string name="review_content_text">Content of review</string>
+    <string name="no_movie_reviews">There are no reviews for this movie.</string>
 
     <!-- Strings for detail activity -->
     <string name="user_rating">User Rating</string>
 
     <!-- Strings for review activity -->
-    <string name="review_author">Author</string>
-    <string name="review_content">Review</string>
+    <string name="review_author">Review by:</string>
+    <string name="review_content">What they said:</string>
 
 </resources>
