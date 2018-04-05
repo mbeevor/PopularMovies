@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,12 +38,20 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
+    // save SearchUrl to ensure user selected results are shown
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString("searchUrl", searchUrl);   }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // set default search to popular movies if not already selected
-        if (searchUrl == null || searchUrl.isEmpty()) {
+        // keep selected search option, or default to popular
+        if (savedInstanceState != null ) {
+            searchUrl = savedInstanceState.getString("searchUrl");
+        } else {
             searchUrl = PopularMoviesPreferences.getPopular();
         }
 
@@ -94,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         emptyTextView.setVisibility(View.INVISIBLE);
 
-        // call loadMovieData method
         loadMovieData(searchUrl);
+
     }
 
     @Override
