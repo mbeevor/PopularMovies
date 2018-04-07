@@ -44,8 +44,6 @@ public class GetMovieDataTask extends AsyncTask<URL, Void, List<Movie>> {
                 if (typeOfQuery != null) {
 
                     moviesList = QueryUtils.getSimpleMovieQueryStringFromJson(typeOfQuery);
-                    Log.v("moviesList is; ", moviesList.toString());
-
                     return moviesList;
                 }
 

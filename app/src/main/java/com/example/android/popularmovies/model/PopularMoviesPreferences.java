@@ -13,10 +13,12 @@ public class PopularMoviesPreferences {
     private static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
     private static final String API_BUILDER = "?api_key=";
     private static final String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w500";
+    private static final String TRAILER_BASE_URL = "https://www.youtube.com/watch?v=";
 
     private static final String POPULAR = "popular";
     private static final String TOP_RATED = "top_rated";
     private static final String REVIEWS = "/reviews";
+    private static final String VIDEOS = "/videos";
 
 
     public static String getBaseUrl() {
@@ -30,6 +32,10 @@ public class PopularMoviesPreferences {
 
     public static String getImageBaseUrl() {
         return  IMAGE_BASE_URL;
+    }
+
+    public static String getTrailerBaseUrl() {
+        return TRAILER_BASE_URL;
     }
 
     public static final String getPopular() {
@@ -47,6 +53,10 @@ public class PopularMoviesPreferences {
     public static String getReviews() {
 
         return REVIEWS;
+    }
+
+    public static String getVideos() {
+        return VIDEOS;
     }
 
 }

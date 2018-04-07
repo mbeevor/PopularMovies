@@ -20,6 +20,7 @@ public class NetworkUtils {
     public static final String baseUrl = PopularMoviesPreferences.getBaseUrl();
     public static final String apiKeyBuilder = PopularMoviesPreferences.getApiBuilder();
     public static final String reviewsString = PopularMoviesPreferences.getReviews();
+    public static final String trailerString = PopularMoviesPreferences.getVideos();
     public static final String apiKey = PopularMoviesPreferences.getApiKey();
 
 
@@ -49,6 +50,21 @@ public class NetworkUtils {
     public static URL reviewUrl(String movieId) {
 
        Uri builtUri = Uri.parse(baseUrl + movieId + reviewsString + apiKeyBuilder + apiKey).buildUpon()
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+    public static URL trailerUrl(String movieId) {
+
+        Uri builtUri = Uri.parse(baseUrl + movieId + trailerString + apiKeyBuilder + apiKey).buildUpon()
                 .build();
 
         URL url = null;

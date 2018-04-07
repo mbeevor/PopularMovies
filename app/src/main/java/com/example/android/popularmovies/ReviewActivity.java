@@ -3,8 +3,11 @@ package com.example.android.popularmovies;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.android.popularmovies.adapters.ReviewAdapter;
 import com.example.android.popularmovies.model.Review;
@@ -22,14 +25,20 @@ import java.util.List;
 
 public class ReviewActivity extends AppCompatActivity {
 
-    List<Review> reviewsList;
+    private List<Review> reviewsList;
+    private ListView listView;
+    private TextView noReviewView;
     public String movieId;
-    ReviewAdapter reviewAdapter;
+    private ReviewAdapter reviewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
+
+        // assign views to IDs
+        listView = findViewById(R.id.review_listview);
+        noReviewView = findViewById(R.id.no_reviews_tv);
 
         // get data from DetailActivity
         Intent intent = getIntent();
@@ -37,7 +46,6 @@ public class ReviewActivity extends AppCompatActivity {
 
         reviewsList = new ArrayList<>();
         reviewAdapter = new ReviewAdapter(this, reviewsList);
-        ListView listView = findViewById(R.id.review_listview);
         listView.setAdapter(reviewAdapter);
 
         loadReviewData(movieId);
@@ -47,10 +55,23 @@ public class ReviewActivity extends AppCompatActivity {
     public void loadReviewData(String movieId) {
 
         URL getReviewUrl = NetworkUtils.reviewUrl(movieId);
-        Log.v("ReviewUrl is  ", getReviewUrl.toString());
         new GetReviewDataTask(new GetReviewDataListener())
                 .execute(getReviewUrl);
 
+    }
+
+    private void showReviews() {
+
+        // hide the error message and show the list view
+        noReviewView.setVisibility(View.INVISIBLE);
+        listView.setVisibility(View.VISIBLE);
+    }
+
+    private void showNoReviews() {
+
+        // show the error message and hide the list view
+        noReviewView.setVisibility(View.VISIBLE);
+        listView.setVisibility(View.INVISIBLE);
     }
 
     public class GetReviewDataListener implements ReviewAsyncTaskListener {
@@ -60,12 +81,18 @@ public class ReviewActivity extends AppCompatActivity {
 
             reviewsList = list;
 
+            // add reviews to adapter
             if (reviewsList != null) {
-
-                reviewAdapter.updateReviewData(reviewsList);
+                reviewAdapter.addAll(reviewsList);
             }
 
-            reviewAdapter.addAll(reviewsList);
+            // if adapter is empty, hide and show error view
+            if (reviewAdapter.getCount() == 0) {
+                showNoReviews();
+            } else {
+                showReviews();
+            }
+
 
         }
     }

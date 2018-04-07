@@ -24,11 +24,11 @@
 
         <TextView
             android:id="@+id/movie_title_tv"
-            android:layout_width="430dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginStart="16dp"
-            android:paddingTop="8dp"
+            android:layout_marginRight="@dimen/standard_margin"
+            android:layout_marginLeft="@dimen/standard_margin"
+            android:paddingTop="@dimen/standard_padding"
             android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp"
             app:layout_constraintEnd_toStartOf="@+id/user_rating_label"
@@ -48,20 +48,30 @@
             app:layout_constraintStart_toStartOf="@+id/movie_title_tv"
             app:layout_constraintTop_toBottomOf="@+id/movie_title_tv"/>
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/trailer_listView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:layout_marginTop="@dimen/standard_margin"
+            android:layout_marginBottom="@dimen/standard_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/release_date_tv" />
+
         <TextView
             android:id="@+id/movie_description_tv"
-            android:layout_width="352dp"
+            android:layout_width="match_parent"
             android:layout_height="223dp"
-            android:layout_marginBottom="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:paddingTop="8dp"
+            android:layout_marginBottom="@dimen/standard_margin"
+            android:layout_marginRight="@dimen/standard_margin"
+            android:layout_marginTop="@dimen/standard_margin"
+            android:padding="@dimen/standard_padding"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/release_date_tv"
-            app:layout_constraintTop_toBottomOf="@+id/release_date_tv"
+            app:layout_constraintTop_toBottomOf="@+id/trailer_listView"
             android:textColor="@color/colorPrimaryText"
             tools:text="@string/description_tools_text"/>
 
@@ -69,9 +79,9 @@
             android:id="@+id/user_rating_label"
             android:layout_width="109dp"
             android:layout_height="40dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginRight="@dimen/wide_margin"
             android:gravity="center"
-            android:paddingTop="8dp"
+            android:paddingTop="@dimen/standard_padding"
             android:text="@string/user_rating"
             android:textColor="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
@@ -81,16 +91,15 @@
             android:id="@+id/user_rating_button"
             android:layout_width="108dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="8dp"
-            android:background="@color/colorAccent"
+            android:layout_marginLeft="@dimen/standard_margin"
+            android:background="@color/colorPrimaryDark"
             android:gravity="center"
             android:text="@string/rating_tools_text"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="@+id/user_rating_label"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/user_rating_label"
-            app:layout_constraintTop_toBottomOf="@+id/user_rating_label"
-            />
+            app:layout_constraintTop_toBottomOf="@+id/user_rating_label" />
 
 
     </android.support.constraint.ConstraintLayout>

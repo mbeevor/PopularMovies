@@ -41,7 +41,8 @@ public class MainActivity extends AppCompatActivity {
     // save SearchUrl to ensure user selected results are shown
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        savedInstanceState.putString("searchUrl", searchUrl);   }
+        savedInstanceState.putString("searchUrl", searchUrl);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

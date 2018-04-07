@@ -55,11 +55,4 @@ public class ReviewAdapter extends ArrayAdapter<Review> {
 
     }
 
-    // notify the app that data has changed to refresh the view
-    public void updateReviewData(List<Review> list) {
-
-        if (list != null )
-            reviewsList = new ArrayList<>(list);
-        notifyDataSetChanged();
-    }
 }
