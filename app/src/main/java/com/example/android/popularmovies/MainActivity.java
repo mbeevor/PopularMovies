@@ -134,6 +134,11 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        // launch favourites in new activity
+        if (id == R.id.favourites) {
+           // TODO: add intent to launch new favourites activity
+        }
+
         return super.onOptionsItemSelected(item);
 
     }

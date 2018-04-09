@@ -48,7 +48,15 @@ public class Movie implements Parcelable {
         return movieTitle;
     }
 
+    public String setMovieTitle() {
+        return movieTitle;
+    }
+
     public String getPosterImage() {
+        return posterImage;
+    }
+
+    public String setPosterImage() {
         return posterImage;
     }
 
@@ -56,7 +64,15 @@ public class Movie implements Parcelable {
         return movieId;
     }
 
+    public String setMovieId() {
+        return movieId;
+    }
+
     public String getBackdropImage() {
+        return backdropImage;
+    }
+
+    public String setBackdropImage() {
         return backdropImage;
     }
 
@@ -64,11 +80,23 @@ public class Movie implements Parcelable {
         return movieOverview;
     }
 
+    public String setMovieOverview() {
+        return movieOverview;
+    }
+
     public String getMovieReleaseDate() {
         return movieReleaseDate;
     }
 
+    public String setMovieReleaseDate() {
+        return movieReleaseDate;
+    }
+
     public String getMovieRating() {
+        return movieRating;
+    }
+
+    public String setMovieRating() {
         return movieRating;
     }
 
