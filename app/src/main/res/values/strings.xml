@@ -2,16 +2,19 @@
     <string name="app_name">Popular Movies</string>
 
     <!-- menu text -->
-    <string name="popular">Most Popular</string>
-    <string name="top_rated">Top Rated</string>
-    <string name="favourites">My Favourites</string>
+    <string name="popular">Most Popular Movies</string>
+    <string name="top_rated">Top Rated Movies</string>
+    <string name="favourites">My Favourite Movies</string>
 
     <!-- Text to display when nothing to show -->
     <string name="empty_view">No movies to show - check your network connection.</string>
 
-    <!-- Toast messages for showing most popular and top rated movies-->
+    <!-- Toast messages -->
     <string name="show_most_popular">Showing most popular movies</string>
     <string name="show_top_rated">Showing top rated movies</string>
+    <string name="show_favourites">Showing favourite movies</string>
+    <string name="added_to_favourites">Movie added to your favourites list</string>
+    <string name="not_added_to_favourites">Movie not added to your favourites list - please try again</string>
 
     <!-- Placeholder text -->
     <string name="description_tools_text">Description of movie</string>
@@ -29,6 +32,7 @@
     <string name="insertion_unsupported">Insertion not supported for </string>
     <string name="deletion_failed">Unable to delete movies</string>
     <string name="update_failed">Update not possible for </string>
+    <string name="cursor_fail">This should only be called when the cursor is valid</string>
 
     <!-- Strings for detail activity -->
     <string name="user_rating">User Rating</string>

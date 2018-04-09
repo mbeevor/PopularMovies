@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,10 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popularmovies.adapters.MovieAdapter;
-import com.example.android.popularmovies.tasks.AsyncTaskListener;
-import com.example.android.popularmovies.tasks.GetMovieDataTask;
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.model.PopularMoviesPreferences;
+import com.example.android.popularmovies.tasks.AsyncTaskListener;
+import com.example.android.popularmovies.tasks.GetMovieDataTask;
 import com.example.android.popularmovies.utlities.NetworkUtils;
 
 import java.net.URL;
@@ -35,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private MovieAdapter movieListAdapter;
     public List<Movie> moviesList;
     private String searchUrl;
+    public String appTitle;
 
 
     @Override
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putString("searchUrl", searchUrl);
+        savedInstanceState.putString("appTitle", appTitle);
     }
 
     @Override
@@ -49,12 +50,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         // keep selected search option, or default to popular
-        if (savedInstanceState != null ) {
+        if (savedInstanceState != null) {
             searchUrl = savedInstanceState.getString("searchUrl");
+            appTitle = savedInstanceState.getString("appTitle");
+
         } else {
             searchUrl = PopularMoviesPreferences.getPopular();
+            appTitle = getString(R.string.popular);
         }
+
+        // assign title of app according to selection
+        setTitle(appTitle);
 
         // find and assign IDs to views
         recyclerView = findViewById(R.id.recyclerview_grid);
@@ -73,24 +81,24 @@ public class MainActivity extends AppCompatActivity {
         movieListAdapter = new MovieAdapter
                 (getApplicationContext(), new MovieAdapter.OnItemClickHandler() {
 
-            @Override
-            public void onItemClick(View item, int position) {
+                    @Override
+                    public void onItemClick(View item, int position) {
 
-                Movie moviePosition = moviesList.get(position);
-                Movie movie = new Movie(
-                        moviePosition.getMovieTitle(),
-                        moviePosition.getPosterImage(),
-                        moviePosition.getMovieId(),
-                        moviePosition.getBackdropImage(),
-                        moviePosition.getMovieOverview(),
-                        moviePosition.getMovieReleaseDate(),
-                        moviePosition.getMovieRating());
-                Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
-                detailActivityIntent.putExtra("movie", movie);
-                startActivity(detailActivityIntent);
+                        Movie moviePosition = moviesList.get(position);
+                        Movie movie = new Movie(
+                                moviePosition.getMovieTitle(),
+                                moviePosition.getPosterImage(),
+                                moviePosition.getMovieId(),
+                                moviePosition.getBackdropImage(),
+                                moviePosition.getMovieOverview(),
+                                moviePosition.getMovieReleaseDate(),
+                                moviePosition.getMovieRating());
+                        Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
+                        detailActivityIntent.putExtra("movie", movie);
+                        startActivity(detailActivityIntent);
 
-            }
-        });
+                    }
+                });
         recyclerView.setAdapter(movieListAdapter);
 
         recyclerView.setOnClickListener(new View.OnClickListener() {
@@ -122,6 +130,8 @@ public class MainActivity extends AppCompatActivity {
         // update Search URL to show most popular results
         if (id == R.id.by_popular) {
             searchUrl = PopularMoviesPreferences.getPopular();
+            appTitle = getString(R.string.popular);
+            setTitle(appTitle);
             loadMovieData(searchUrl);
             Toast.makeText(this, R.string.show_most_popular, Toast.LENGTH_SHORT).show();
         }
@@ -129,6 +139,8 @@ public class MainActivity extends AppCompatActivity {
         // update Search URL to show top rated results
         if (id == R.id.top_rated) {
             searchUrl = PopularMoviesPreferences.getTopRated();
+            appTitle = getString(R.string.top_rated);
+            setTitle(appTitle);
             loadMovieData(searchUrl);
             Toast.makeText(this, R.string.show_top_rated, Toast.LENGTH_SHORT).show();
 
@@ -136,7 +148,10 @@ public class MainActivity extends AppCompatActivity {
 
         // launch favourites in new activity
         if (id == R.id.favourites) {
-           // TODO: add intent to launch new favourites activity
+            Intent favouritesIntent = new Intent(this, FavouritesActivity.class);
+            Toast.makeText(this, R.string.show_favourites, Toast.LENGTH_SHORT).show();
+            startActivity(favouritesIntent);
+
         }
 
         return super.onOptionsItemSelected(item);
@@ -191,10 +206,10 @@ public class MainActivity extends AppCompatActivity {
 
     public class GetMovieDataListener implements AsyncTaskListener {
 
-       @Override
+        @Override
         public void onTaskComplete(List<Movie> list) {
 
-           moviesList = list;
+            moviesList = list;
 
             if (moviesList != null) {
                 showMovieDataView();

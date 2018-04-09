@@ -3,8 +3,6 @@ package com.example.android.popularmovies;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,6 +27,7 @@ public class ReviewActivity extends AppCompatActivity {
     private ListView listView;
     private TextView noReviewView;
     public String movieId;
+    public String movieTitle;
     private ReviewAdapter reviewAdapter;
 
     @Override
@@ -43,10 +42,13 @@ public class ReviewActivity extends AppCompatActivity {
         // get data from DetailActivity
         Intent intent = getIntent();
         movieId = intent.getExtras().getString("movieId");
+        movieTitle = intent.getExtras().getString("movieTitle");
 
         reviewsList = new ArrayList<>();
         reviewAdapter = new ReviewAdapter(this, reviewsList);
         listView.setAdapter(reviewAdapter);
+
+        setTitle(movieTitle);
 
         loadReviewData(movieId);
 

@@ -35,6 +35,20 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".DetailActivity"/>
         </activity>
+
+        <activity
+            android:name=".FavouritesActivity"
+            android:launchMode="singleTop"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
+        </activity>
+        <provider
+            android:authorities="com.example.android.popularmovies"
+            android:name=".data.MovieProvider"
+            android:exported="false" />
+
     </application>
 
 </manifest>

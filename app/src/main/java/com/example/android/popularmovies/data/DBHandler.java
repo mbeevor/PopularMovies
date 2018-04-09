@@ -13,9 +13,9 @@ import com.example.android.popularmovies.data.MovieContract.MovieEntry;
 public class DBHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     // Database Name
-    private static final String DATABASE_NAME = "favourite_movie_list";
+    private static final String DATABASE_NAME = "favouritemovielist.db";
 
     // Default constructor
     public DBHandler(Context context) {
@@ -25,16 +25,17 @@ public class DBHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
-        String SQL_CREATE_TABLE = "CREATE_TABLE " + MovieEntry.TABLE_NAME + " ("
+        final String SQL_CREATE_TABLE =
+
+                "CREATE_TABLE " + MovieEntry.TABLE_NAME + " ("
                 + MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + MovieEntry.MOVIE_TITLE + " TEXT NOT NULL, "
-                + MovieEntry.POSTER_IMAGE + " TEXT NOT NULL, "
-                + MovieEntry.POSTER_IMAGE + " TEXT NOT NULL, "
-                + MovieEntry.MOVIE_ID + " TEXT NOT NULL, "
-                + MovieEntry.BACKDROP_IMAGE + " TEXT NOT NULL, "
-                + MovieEntry.MOVIE_OVERVIEW + " TEXT NOT NULL, "
-                + MovieEntry.MOVIE_RELEASE_DATE + " TEXT NOT NULL, "
-                + MovieEntry.MOVIE_RATING + " TEXT NOT NULL, );";
+                + MovieEntry.MOVIE_TITLE + " TEXT, "
+                + MovieEntry.POSTER_IMAGE + " TEXT, "
+                + MovieEntry.MOVIE_ID + " TEXT, "
+                + MovieEntry.BACKDROP_IMAGE + " TEXT, "
+                + MovieEntry.MOVIE_OVERVIEW + " TEXT, "
+                + MovieEntry.MOVIE_RELEASE_DATE + " TEXT, "
+                + MovieEntry.MOVIE_RATING + " TEXT);";
 
        sqLiteDatabase.execSQL(SQL_CREATE_TABLE);
 
@@ -42,6 +43,9 @@ public class DBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
+
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + MovieEntry.TABLE_NAME);
+        onCreate(sqLiteDatabase);
 
     }
 }
