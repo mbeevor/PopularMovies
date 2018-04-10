@@ -8,6 +8,8 @@
 
     <!-- Text to display when nothing to show -->
     <string name="empty_view">No movies to show - check your network connection.</string>
+    <string name="favourites_empty_view">Add some movies by clicking the favourite star!</string>
+
 
     <!-- Toast messages -->
     <string name="show_most_popular">Showing most popular movies</string>

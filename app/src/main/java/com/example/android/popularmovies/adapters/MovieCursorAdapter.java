@@ -20,8 +20,8 @@ import com.squareup.picasso.Picasso;
 public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAdapter.ViewHolder> {
 
 
-    public MovieCursorAdapter(Context thisContext, Cursor data) {
-        super(thisContext, data);
+    public MovieCursorAdapter(Cursor data) {
+        super(data);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -47,11 +47,6 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-
-    }
-
-    @Override
     public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
 
         ViewHolder viewHolder = holder;
@@ -66,4 +61,5 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
                 .load(posterImageUrl)
                 .into(viewHolder.movieIconIv);
     }
+
 }

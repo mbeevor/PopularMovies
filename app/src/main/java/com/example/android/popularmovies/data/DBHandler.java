@@ -27,7 +27,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
         final String SQL_CREATE_TABLE =
 
-                "CREATE_TABLE " + MovieEntry.TABLE_NAME + " ("
+                "CREATE TABLE " + MovieEntry.TABLE_NAME + " ("
                 + MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + MovieEntry.MOVIE_TITLE + " TEXT, "
                 + MovieEntry.POSTER_IMAGE + " TEXT, "

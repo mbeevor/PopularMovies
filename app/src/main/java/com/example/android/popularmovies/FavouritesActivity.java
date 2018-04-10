@@ -46,7 +46,7 @@ public class FavouritesActivity extends AppCompatActivity implements LoaderManag
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        MovieCursorAdapter movieCursorAdapter = new MovieCursorAdapter(this, null);
+        movieCursorAdapter = new MovieCursorAdapter(null);
         recyclerView.setAdapter(movieCursorAdapter);
 
         getLoaderManager().initLoader(MOVIE_LOADER, null, this);
@@ -73,8 +73,9 @@ public class FavouritesActivity extends AppCompatActivity implements LoaderManag
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
-        movieCursorAdapter.swapCursor(cursor);
-        if (cursor != null) {
+        if (movieCursorAdapter == null) {
+
+            movieCursorAdapter.swapCursor(cursor);
             showMovieDataView();
         } else {
             showErrorView();
@@ -105,6 +106,7 @@ public class FavouritesActivity extends AppCompatActivity implements LoaderManag
         progressBar.setVisibility(View.INVISIBLE);
         recyclerView.setVisibility(View.INVISIBLE);
         emptyTextView.setVisibility(View.VISIBLE);
+        emptyTextView.setText(R.string.favourites_empty_view);
     }
 
     // method to calculate size of Grid based on device configuration

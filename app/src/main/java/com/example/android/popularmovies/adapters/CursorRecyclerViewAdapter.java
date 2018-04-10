@@ -13,98 +13,75 @@ import static com.example.android.popularmovies.data.MovieContract.MovieEntry._I
 
 public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
-    private Context context;
     private Cursor cursor;
     private boolean dataValid;
     private int rowId;
-    private DataSetObserver dataSetObserver;
 
-    public CursorRecyclerViewAdapter(Context thisContext, Cursor data) {
+    public abstract void onBindViewHolder(VH viewHolder, Cursor cursor);
 
-        context = thisContext;
-        cursor = data;
-        dataValid = cursor != null;
-        rowId = dataValid ? cursor.getColumnIndex(_ID) : -1;
-        dataSetObserver = new NotifyingDataSetObserver();
-        if (cursor != null) {
-            cursor.registerDataSetObserver(dataSetObserver);
+    public CursorRecyclerViewAdapter(Cursor data) {
+
+        setHasStableIds(true);
+        swapCursor(data);
+
+    }
+
+    @Override
+    public void onBindViewHolder(VH holder, int position) {
+
+        if (!dataValid) {
+            throw new IllegalArgumentException("Error - cursor not valid");
         }
 
+        if (!cursor.moveToPosition(position)) {
+            throw new IllegalArgumentException("Error - couldn't move cursor to position " + position);
+        }
+
+        onBindViewHolder(holder, cursor);
     }
 
-    public Cursor getCursor() {
-        return cursor;
-    }
 
     @Override
     public int getItemCount() {
 
-        if (cursor != null) {
+        if (dataValid) {
             return cursor.getCount();
+        } else {
+            return 0;
         }
-        return 0;
     }
 
     @Override
     public long getItemId(int position) {
 
-        if (dataValid && cursor != null && cursor.moveToPosition(position)) {
-            return cursor.getLong(rowId);
+        if (!dataValid) {
+            throw new IllegalArgumentException("Error - cursor not valid");
         }
-        return 0;
+
+        if (!cursor.moveToPosition(position)) {
+            throw new IllegalArgumentException("Error - couldn't move cursor to position " + position);
+        }
+        return cursor.getLong(rowId);
     }
 
-    @Override
-    public void setHasStableIds(boolean hasStableIds) {
-        super.setHasStableIds(true);
-    }
 
-
-    public abstract void onBindViewHolder(VH viewHolder, Cursor cursor);
-
-    @Override
-    public void onBindViewHolder(VH holder, int position) {
-
-        onBindViewHolder(holder, cursor);
-    }
-
-    public Cursor swapCursor(Cursor newCursor) {
+    public void swapCursor(Cursor newCursor) {
 
         if (cursor == newCursor) {
-            return null;
+            return;
         }
-        final Cursor oldCursor = cursor;
-        if (oldCursor != null && dataSetObserver != null) {
-            oldCursor.unregisterDataSetObserver(dataSetObserver);
-
-        }
-
-        cursor = newCursor;
-        if (cursor != null) {
-            if (dataSetObserver != null) {
-                cursor.registerDataSetObserver(dataSetObserver);
-
-            }
-
-            rowId = newCursor.getColumnIndexOrThrow(_ID);
+        if (newCursor != null) {
+            cursor = newCursor;
+            rowId = cursor.getColumnIndexOrThrow(_ID);
             dataValid = true;
             notifyDataSetChanged();
         } else {
-            rowId = -1;
-            dataValid = false;
-            notifyDataSetChanged();
-        }
 
-        return oldCursor;
+                notifyItemRangeRemoved(0, getItemCount());
+                cursor = null;
+                rowId = -1;
+                dataValid = false;
+            }
     }
 
-    private class NotifyingDataSetObserver extends DataSetObserver {
-
-        @Override
-        public void onChanged() {
-            super.onChanged();
-            dataValid = true;
-            notifyDataSetChanged();
-        }
-    }
 }

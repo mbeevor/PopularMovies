@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.popularmovies.adapters.TrailerAdapter;
 import com.example.android.popularmovies.data.MovieContract;
@@ -40,7 +41,6 @@ import java.util.List;
 public class DetailActivity extends AppCompatActivity {
 
     private static final String YOUTUBE = "YouTube";
-    private ImageView posterImageView;
     private ImageView movieBackdrop;
     private TextView movieTitle;
     private TextView movieRelease;
@@ -59,7 +59,6 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         // assign views to IDs
-        posterImageView = findViewById(R.id.movie_icon_iv);
         movieBackdrop = findViewById(R.id.movie_backdrop_iv);
         movieTitle = findViewById(R.id.movie_title_tv);
         movieRelease = findViewById(R.id.release_date_tv);
@@ -174,13 +173,13 @@ public class DetailActivity extends AppCompatActivity {
                     values.put(MovieContract.MovieEntry.MOVIE_RELEASE_DATE, movie.getMovieReleaseDate());
                     values.put(MovieContract.MovieEntry.MOVIE_RATING, movie.getMovieRating());
 
-//                    Uri newUri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);
-//                    if (newUri != null) {
-//                        Toast.makeText(getApplicationContext(), R.string.added_to_favourites, Toast.LENGTH_SHORT).show();
-//                    } else {
-//                        Toast.makeText(getApplicationContext(), R.string.not_added_to_favourites, Toast.LENGTH_SHORT).show();
-//
-//                    }
+                    Uri newUri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);
+                    if (newUri != null) {
+                        Toast.makeText(getApplicationContext(), R.string.added_to_favourites, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), R.string.not_added_to_favourites, Toast.LENGTH_SHORT).show();
+
+                    }
 
 
                 }
