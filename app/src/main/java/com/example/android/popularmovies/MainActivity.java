@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -111,17 +112,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     });
             recyclerView.setAdapter(movieListAdapter);
 
-            recyclerView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    loadMovieData(searchUrl);
-                }
-            });
-
-            // hide empty text view and show progress bar
-            progressBar.setVisibility(View.VISIBLE);
-            emptyTextView.setVisibility(View.INVISIBLE);
-
+            showLoadingView();
             loadMovieData(searchUrl);
 
         } else {
@@ -142,11 +133,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        showLoadingView();
+
         // update Search URL to show most popular results
         if (id == R.id.by_popular) {
             searchUrl = PopularMoviesPreferences.getPopular();
             appTitle = getString(R.string.popular);
-            setTitle(appTitle);
             loadMovieData(searchUrl);
             Toast.makeText(this, R.string.show_most_popular, Toast.LENGTH_SHORT).show();
         }
@@ -155,7 +147,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         if (id == R.id.top_rated) {
             searchUrl = PopularMoviesPreferences.getTopRated();
             appTitle = getString(R.string.top_rated);
-            setTitle(appTitle);
             loadMovieData(searchUrl);
             Toast.makeText(this, R.string.show_top_rated, Toast.LENGTH_SHORT).show();
 
@@ -163,11 +154,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // update Search URL to null and launch new loader
         if (id == R.id.favourites) {
-            searchUrl = null;
+
             appTitle = getString(R.string.favourites);
-            setTitle(appTitle);
             getLoaderManager().initLoader(MOVIE_LOADER, null, this);
         }
+
+        setTitle(appTitle);
 
         return super.onOptionsItemSelected(item);
 
@@ -181,6 +173,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         new GetMovieDataTask(new GetMovieDataListener())
                 .execute(getSearchUrl);
 
+    }
+
+    private void showLoadingView() {
+
+        // hide empty text view and show progress bar
+        progressBar.setVisibility(View.VISIBLE);
+        emptyTextView.setVisibility(View.INVISIBLE);
     }
 
     private void showMovieDataView() {
@@ -221,9 +220,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public class GetMovieDataListener implements AsyncTaskListener {
 
+
         @Override
         public void onTaskComplete(List<Movie> list) {
 
+            // assign adapter to movieListAdapter (i.e. AsyncTask)
+            recyclerView.setAdapter(movieListAdapter);
             moviesList = list;
 
             if (moviesList != null) {
@@ -257,11 +259,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
+        // update empty text view to favourites error
+        emptyTextView.setText(R.string.favourites_empty_view);
+
         if (movieCursorAdapter == null) {
             movieCursorAdapter = new MovieCursorAdapter(cursor);
-            recyclerView.setAdapter(movieCursorAdapter);
-            showMovieDataView();
-        } else {
+        }
+        recyclerView.setAdapter(movieCursorAdapter);
+
+        showMovieDataView();
+
+        // show error view if no movies saved to favourites
+        if (movieCursorAdapter.getItemCount() == 0) {
             showErrorView();
         }
 
@@ -270,7 +279,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
-        movieCursorAdapter = null;
         movieCursorAdapter.swapCursor(null);
 
     }

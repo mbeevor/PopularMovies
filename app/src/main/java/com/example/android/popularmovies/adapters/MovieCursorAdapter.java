@@ -62,4 +62,8 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
                 .into(viewHolder.movieIconIv);
     }
 
+    @Override
+    public void swapCursor(Cursor newCursor) {
+        super.swapCursor(newCursor);
+    }
 }

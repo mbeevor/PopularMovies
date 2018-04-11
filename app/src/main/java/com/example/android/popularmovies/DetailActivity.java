@@ -70,7 +70,6 @@ public class DetailActivity extends AppCompatActivity {
         // get data from MainActivity
         Intent intent = getIntent();
         final Movie movie = intent.getParcelableExtra("movie");
-        Log.v("movie details: ", movie.toString());
 
         if (movie != null) {
 
