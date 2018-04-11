@@ -1,7 +1,11 @@
 package com.example.android.popularmovies;
 
+import android.app.LoaderManager;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -15,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popularmovies.adapters.MovieAdapter;
+import com.example.android.popularmovies.adapters.MovieCursorAdapter;
+import com.example.android.popularmovies.data.MovieContract;
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.model.PopularMoviesPreferences;
 import com.example.android.popularmovies.tasks.AsyncTaskListener;
@@ -25,7 +31,7 @@ import java.net.URL;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
 
     private RecyclerView recyclerView;
@@ -35,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     public List<Movie> moviesList;
     private String searchUrl;
     public String appTitle;
+    private static final int MOVIE_LOADER = 0;
+    private MovieCursorAdapter movieCursorAdapter;
 
 
     @Override
@@ -77,42 +85,49 @@ public class MainActivity extends AppCompatActivity {
         // set recyclerView to have a fixed size so that all items in the list are the same size.
         recyclerView.setHasFixedSize(true);
 
-        // set recyclerView to image adapter, passing in the OnItemClickHandler and Overriding what to do when clicked
-        movieListAdapter = new MovieAdapter
-                (getApplicationContext(), new MovieAdapter.OnItemClickHandler() {
+        // check searchUrl is not equal to null, and create new movie adapter
+        if (searchUrl != null) {
+            // set recyclerView to image adapter, passing in the OnItemClickHandler and Overriding what to do when clicked
+            movieListAdapter = new MovieAdapter
+                    (getApplicationContext(), new MovieAdapter.OnItemClickHandler() {
 
-                    @Override
-                    public void onItemClick(View item, int position) {
+                        @Override
+                        public void onItemClick(View item, int position) {
 
-                        Movie moviePosition = moviesList.get(position);
-                        Movie movie = new Movie(
-                                moviePosition.getMovieTitle(),
-                                moviePosition.getPosterImage(),
-                                moviePosition.getMovieId(),
-                                moviePosition.getBackdropImage(),
-                                moviePosition.getMovieOverview(),
-                                moviePosition.getMovieReleaseDate(),
-                                moviePosition.getMovieRating());
-                        Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
-                        detailActivityIntent.putExtra("movie", movie);
-                        startActivity(detailActivityIntent);
+                            Movie moviePosition = moviesList.get(position);
+                            Movie movie = new Movie(
+                                    moviePosition.getMovieTitle(),
+                                    moviePosition.getPosterImage(),
+                                    moviePosition.getMovieId(),
+                                    moviePosition.getBackdropImage(),
+                                    moviePosition.getMovieOverview(),
+                                    moviePosition.getMovieReleaseDate(),
+                                    moviePosition.getMovieRating());
+                            Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
+                            detailActivityIntent.putExtra("movie", movie);
+                            startActivity(detailActivityIntent);
 
-                    }
-                });
-        recyclerView.setAdapter(movieListAdapter);
+                        }
+                    });
+            recyclerView.setAdapter(movieListAdapter);
 
-        recyclerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loadMovieData(searchUrl);
-            }
-        });
+            recyclerView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    loadMovieData(searchUrl);
+                }
+            });
 
-        // hide empty text view and show progress bar
-        progressBar.setVisibility(View.VISIBLE);
-        emptyTextView.setVisibility(View.INVISIBLE);
+            // hide empty text view and show progress bar
+            progressBar.setVisibility(View.VISIBLE);
+            emptyTextView.setVisibility(View.INVISIBLE);
 
-        loadMovieData(searchUrl);
+            loadMovieData(searchUrl);
+
+        } else {
+            // launch loader manager to display favourites
+            getLoaderManager().initLoader(MOVIE_LOADER, null, this);
+        }
 
     }
 
@@ -146,14 +161,12 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        // launch favourites in new activity
+        // update Search URL to null and launch new loader
         if (id == R.id.favourites) {
+            searchUrl = null;
             appTitle = getString(R.string.favourites);
             setTitle(appTitle);
-            Intent favouritesIntent = new Intent(this, FavouritesActivity.class);
-            Toast.makeText(this, R.string.show_favourites, Toast.LENGTH_SHORT).show();
-            startActivity(favouritesIntent);
-
+            getLoaderManager().initLoader(MOVIE_LOADER, null, this);
         }
 
         return super.onOptionsItemSelected(item);
@@ -222,6 +235,44 @@ public class MainActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+
+        String[] projection = {
+                MovieContract.MovieEntry._ID,
+                MovieContract.MovieEntry.MOVIE_TITLE,
+                MovieContract.MovieEntry.POSTER_IMAGE,
+                MovieContract.MovieEntry.MOVIE_ID,
+                MovieContract.MovieEntry.BACKDROP_IMAGE,
+                MovieContract.MovieEntry.MOVIE_OVERVIEW,
+                MovieContract.MovieEntry.MOVIE_RELEASE_DATE,
+                MovieContract.MovieEntry.MOVIE_RATING
+
+        };
+        return new CursorLoader(this, MovieContract.MovieEntry.CONTENT_URI, projection, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+        if (movieCursorAdapter == null) {
+            movieCursorAdapter = new MovieCursorAdapter(cursor);
+            recyclerView.setAdapter(movieCursorAdapter);
+            showMovieDataView();
+        } else {
+            showErrorView();
+        }
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+        movieCursorAdapter = null;
+        movieCursorAdapter.swapCursor(null);
+
     }
 
 
