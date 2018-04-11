@@ -46,9 +46,6 @@ public class FavouritesActivity extends AppCompatActivity implements LoaderManag
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(true);
 
-        movieCursorAdapter = new MovieCursorAdapter(null);
-        recyclerView.setAdapter(movieCursorAdapter);
-
         getLoaderManager().initLoader(MOVIE_LOADER, null, this);
 
     }
@@ -74,8 +71,8 @@ public class FavouritesActivity extends AppCompatActivity implements LoaderManag
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
         if (movieCursorAdapter == null) {
-
-            movieCursorAdapter.swapCursor(cursor);
+            movieCursorAdapter = new MovieCursorAdapter(cursor);
+            recyclerView.setAdapter(movieCursorAdapter);
             showMovieDataView();
         } else {
             showErrorView();

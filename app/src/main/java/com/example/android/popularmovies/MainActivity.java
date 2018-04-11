@@ -148,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
 
         // launch favourites in new activity
         if (id == R.id.favourites) {
+            appTitle = getString(R.string.favourites);
+            setTitle(appTitle);
             Intent favouritesIntent = new Intent(this, FavouritesActivity.class);
             Toast.makeText(this, R.string.show_favourites, Toast.LENGTH_SHORT).show();
             startActivity(favouritesIntent);
