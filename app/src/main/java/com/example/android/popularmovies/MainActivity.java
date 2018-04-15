@@ -10,11 +10,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -105,6 +105,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                                     moviePosition.getMovieReleaseDate(),
                                     moviePosition.getMovieRating());
                             Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
+                            Log.v("movie = ", movie.toString());
+
                             detailActivityIntent.putExtra("movie", movie);
                             startActivity(detailActivityIntent);
 
@@ -257,15 +259,34 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+    public void onLoadFinished(Loader<Cursor> loader, final Cursor cursor) {
 
         // update empty text view to favourites error
         emptyTextView.setText(R.string.favourites_empty_view);
 
-        if (movieCursorAdapter == null) {
-            movieCursorAdapter = new MovieCursorAdapter(cursor);
-        }
-        recyclerView.setAdapter(movieCursorAdapter);
+            movieCursorAdapter = new MovieCursorAdapter(cursor, new MovieCursorAdapter.OnItemClickHandler() {
+
+                @Override
+                public void onItemClick(View item, int position) {
+
+                    cursor.moveToPosition(position);
+
+                    Movie movie = new Movie(
+                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_TITLE)),
+                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.POSTER_IMAGE)),
+                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_ID)),
+                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.BACKDROP_IMAGE)),
+                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_OVERVIEW)),
+                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_RELEASE_DATE)),
+                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_RATING)));
+                    Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
+                    Log.v("movie = ", movie.toString());
+                    detailActivityIntent.putExtra("movie", movie);
+                    startActivity(detailActivityIntent);
+
+                }
+            });
+                recyclerView.setAdapter(movieCursorAdapter);
 
         showMovieDataView();
 

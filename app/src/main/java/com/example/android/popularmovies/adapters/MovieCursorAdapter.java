@@ -6,50 +6,54 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 
 import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.data.MovieContract;
+import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.model.PopularMoviesPreferences;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 /**
  * Created by Matthew on 09/04/2018.
  */
 
-public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAdapter.ViewHolder> {
+public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAdapter.MovieCursorViewHolder> {
 
+    private OnItemClickHandler clickHandler;
 
-    public MovieCursorAdapter(Cursor data) {
-        super(data);
+    // interface for Handler
+    public interface OnItemClickHandler {
+        void onItemClick(View item, int position);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        public ImageView movieIconIv;
-
-        public ViewHolder(View itemView) {
-
-            super(itemView);
-            movieIconIv = itemView.findViewById(R.id.movie_icon_iv);
-
-        }
+    public MovieCursorAdapter(Cursor data, OnItemClickHandler onItemClickHandler) {
+        super(data);
+        clickHandler = onItemClickHandler;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public MovieCursorViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         int layoutForListItem = R.layout.movie_list_item;
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View itemView = inflater.inflate(layoutForListItem, parent, false);
-        ViewHolder viewHolder = new ViewHolder(itemView);
+        MovieCursorViewHolder viewHolder = new MovieCursorViewHolder(itemView);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, Cursor cursor) {
+    public void onBindViewHolder(MovieCursorViewHolder holder, Cursor cursor) {
 
-        ViewHolder viewHolder = holder;
+        MovieCursorViewHolder viewHolder = holder;
         Context context = viewHolder.movieIconIv.getContext();
 
         // extract image view from cursor
@@ -65,5 +69,29 @@ public class MovieCursorAdapter extends CursorRecyclerViewAdapter<MovieCursorAda
     @Override
     public void swapCursor(Cursor newCursor) {
         super.swapCursor(newCursor);
+    }
+
+    public class MovieCursorViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        public ImageView movieIconIv;
+
+        public MovieCursorViewHolder(final View itemView) {
+
+            super(itemView);
+            movieIconIv = itemView.findViewById(R.id.movie_icon_iv);
+            itemView.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View view) {
+
+            int position = getAdapterPosition();
+            if (position != RecyclerView.NO_POSITION) {
+                clickHandler.onItemClick(view, position);
+            }
+        }
+
+
     }
 }

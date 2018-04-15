@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import static com.example.android.popularmovies.data.MovieContract.MovieEntry._ID;
 
@@ -25,6 +26,7 @@ public abstract class CursorRecyclerViewAdapter<VH extends RecyclerView.ViewHold
         swapCursor(data);
 
     }
+
 
     @Override
     public void onBindViewHolder(VH holder, int position) {
