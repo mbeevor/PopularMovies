@@ -13,7 +13,7 @@ import com.example.android.popularmovies.data.MovieContract.MovieEntry;
 public class DBHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     // Database Name
     private static final String DATABASE_NAME = "favouritemovielist.db";
 

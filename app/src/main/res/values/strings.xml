@@ -17,6 +17,13 @@
     <string name="show_favourites">Showing favourite movies</string>
     <string name="added_to_favourites">Movie added to your favourites list</string>
     <string name="not_added_to_favourites">Movie not added to your favourites list - please try again</string>
+    <string name="movie_removed_from_favourites">Movie removed from your favourites list.</string>
+    <string name="movie_not_removed_from_favourites">Error - please try again.</string>
+
+    <!-- alert messages -->
+    <string name="delete_warning_message">Delete movie from favourites list?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
 
     <!-- Placeholder text -->
     <string name="description_tools_text">Description of movie</string>

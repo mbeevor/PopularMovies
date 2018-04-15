@@ -1,7 +1,6 @@
 package com.example.android.popularmovies.tasks;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.utlities.NetworkUtils;
@@ -59,8 +58,9 @@ public class GetMovieDataTask extends AsyncTask<URL, Void, List<Movie>> {
     @Override
     protected void onPostExecute(final List<Movie> list) {
 
-        delegate.onTaskComplete(moviesList);
-
+        if (moviesList != null) {
+            delegate.onTaskComplete(moviesList);
+        }
 
     }
 }

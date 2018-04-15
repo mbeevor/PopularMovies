@@ -1,16 +1,19 @@
 package com.example.android.popularmovies;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popularmovies.adapters.TrailerAdapter;
+import com.example.android.popularmovies.data.DBHandler;
 import com.example.android.popularmovies.data.MovieContract;
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.model.PopularMoviesPreferences;
@@ -34,6 +38,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.example.android.popularmovies.data.MovieContract.MovieEntry.MOVIE_ID;
+
 /**
  * Created by Matthew on 19/03/2018.
  */
@@ -41,6 +47,7 @@ import java.util.List;
 public class DetailActivity extends AppCompatActivity {
 
     private static final String YOUTUBE = "YouTube";
+    final Context context = this;
     private ImageView movieBackdrop;
     private TextView movieTitle;
     private TextView movieRelease;
@@ -52,6 +59,9 @@ public class DetailActivity extends AppCompatActivity {
     private RecyclerView trailerRecyclerView;
     private TrailerAdapter trailerAdapter;
     private FloatingActionButton fab;
+    private DBHandler dbHandler;
+    private Cursor cursor;
+    private Movie movie;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,7 +79,7 @@ public class DetailActivity extends AppCompatActivity {
 
         // get data from MainActivity
         Intent intent = getIntent();
-        final Movie movie = intent.getParcelableExtra("movie");
+        movie = intent.getParcelableExtra("movie");
 
         if (movie != null) {
 
@@ -157,30 +167,90 @@ public class DetailActivity extends AppCompatActivity {
                 }
             });
 
+            // initialise database
+            dbHandler = new DBHandler(this);
+
+            // update favourite star based on database entry
+            if (movieInDatabase() == true) {
+                fab.setImageResource(R.drawable.ic_star_border_selected);
+            } else {
+                fab.setImageResource(R.drawable.ic_star_border_unselected);
+            }
+
             // add movie to favourites
             fab.setOnClickListener(new View.OnClickListener() {
+
 
                 @Override
                 public void onClick(View view) {
 
-                    ContentValues values = new ContentValues();
-                    values.put(MovieContract.MovieEntry.MOVIE_TITLE, movie.getMovieTitle());
-                    values.put(MovieContract.MovieEntry.POSTER_IMAGE, movie.getPosterImage());
-                    values.put(MovieContract.MovieEntry.MOVIE_ID, movie.getMovieId());
-                    values.put(MovieContract.MovieEntry.BACKDROP_IMAGE, movie.getBackdropImage());
-                    values.put(MovieContract.MovieEntry.MOVIE_OVERVIEW, movie.getMovieOverview());
-                    values.put(MovieContract.MovieEntry.MOVIE_RELEASE_DATE, movie.getMovieReleaseDate());
-                    values.put(MovieContract.MovieEntry.MOVIE_RATING, movie.getMovieRating());
+                    if (movieInDatabase() == true) {
 
-                    Uri newUri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);
-                    if (newUri != null) {
-                        Toast.makeText(getApplicationContext(), R.string.added_to_favourites, Toast.LENGTH_SHORT).show();
+                        // confirm deletion
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setMessage(R.string.delete_warning_message);
+
+                        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int id) {
+
+                                // delete movie
+                                String currentMovieId = MovieContract.MovieEntry.MOVIE_ID;
+                                String[] currentMovieIdArray = {movie.getMovieId()};
+                                int rowsDeleted = getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
+                                        currentMovieId + " =? ",
+                                        currentMovieIdArray);
+                                if (rowsDeleted != 0) {
+                                    Toast.makeText(getApplicationContext(), R.string.movie_removed_from_favourites, Toast.LENGTH_SHORT).show();
+                                    finish();
+                                } else {
+                                    Toast.makeText(getApplicationContext(), R.string.movie_not_removed_from_favourites, Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                        });
+
+                        // if cancelled, go back
+                        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int id) {
+                                if (dialogInterface != null) {
+                                    dialogInterface.dismiss();
+                                }
+                            }
+                        });
+
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+
+
                     } else {
-                        Toast.makeText(getApplicationContext(), R.string.not_added_to_favourites, Toast.LENGTH_SHORT).show();
+
+                        // build new movie for database
+                        ContentValues values = new ContentValues();
+                        values.put(MovieContract.MovieEntry.MOVIE_TITLE, movie.getMovieTitle());
+                        values.put(MovieContract.MovieEntry.POSTER_IMAGE, movie.getPosterImage());
+                        values.put(MovieContract.MovieEntry.MOVIE_ID, movie.getMovieId());
+                        values.put(MovieContract.MovieEntry.BACKDROP_IMAGE, movie.getBackdropImage());
+                        values.put(MovieContract.MovieEntry.MOVIE_OVERVIEW, movie.getMovieOverview());
+                        values.put(MovieContract.MovieEntry.MOVIE_RELEASE_DATE, movie.getMovieReleaseDate());
+                        values.put(MovieContract.MovieEntry.MOVIE_RATING, movie.getMovieRating());
+
+
+                        // add movie to favourites database
+                        Uri newUri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);
+                        if (newUri != null) {
+                            Toast.makeText(getApplicationContext(), R.string.added_to_favourites, Toast.LENGTH_SHORT).show();
+                            fab.setImageResource(R.drawable.ic_star_border_selected);
+                            String searchUrl = null;
+                        } else {
+                            Toast.makeText(getApplicationContext(), R.string.not_added_to_favourites, Toast.LENGTH_SHORT).show();
+                        }
+
 
                     }
-
-
                 }
             });
 
@@ -194,6 +264,17 @@ public class DetailActivity extends AppCompatActivity {
         new GetTrailerDataTask(new GetTrailerDataListener())
                 .execute(getTrailerUrl);
 
+    }
+
+    // check if movie is in favourites list
+    public boolean movieInDatabase() {
+
+        cursor = dbHandler.getReadableDatabase().query(MovieContract.MovieEntry.TABLE_NAME,
+                new String[]{MOVIE_ID},
+                MOVIE_ID + " = ?",
+                new String[]{movieId}, null, null, null, null);
+
+        return cursor.moveToFirst();
     }
 
     public class GetTrailerDataListener implements TrailerAsyncTaskListener {
@@ -215,5 +296,6 @@ public class DetailActivity extends AppCompatActivity {
             }
         }
     }
+
 
 }

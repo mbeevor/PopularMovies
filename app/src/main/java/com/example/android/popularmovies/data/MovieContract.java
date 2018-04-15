@@ -32,7 +32,7 @@ public class MovieContract {
 
 
         // Name of database for movies
-        public static final String TABLE_NAME = "favourite_movies";
+        public static final String TABLE_NAME = "movies";
 
         // unique ID for each item in table
         public static final String _ID = BaseColumns._ID;

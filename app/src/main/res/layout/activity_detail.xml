@@ -17,8 +17,7 @@
             android:clickable="true"
             android:focusable="true"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/movie_backdrop_iv"
-            app:srcCompat="@drawable/ic_star_border_black_24dp" />
+            app:layout_constraintTop_toTopOf="@id/movie_backdrop_iv" />
 
         <ImageView
             android:id="@+id/movie_backdrop_iv"

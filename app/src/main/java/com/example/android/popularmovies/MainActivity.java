@@ -35,14 +35,14 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
 
+    private static final int MOVIE_LOADER = 0;
+    public List<Movie> moviesList;
+    public String appTitle;
     private RecyclerView recyclerView;
     private TextView emptyTextView;
     private ProgressBar progressBar;
     private MovieAdapter movieListAdapter;
-    public List<Movie> moviesList;
     private String searchUrl;
-    public String appTitle;
-    private static final int MOVIE_LOADER = 0;
     private MovieCursorAdapter movieCursorAdapter;
 
 
@@ -121,6 +121,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             // launch loader manager to display favourites
             getLoaderManager().initLoader(MOVIE_LOADER, null, this);
         }
+
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+
+        if (searchUrl != null) {
+            recyclerView.setAdapter(movieListAdapter);
+        } else {
+            getLoaderManager().initLoader(MOVIE_LOADER, null, this);
+        }
+
 
     }
 
@@ -220,29 +233,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     }
 
-    public class GetMovieDataListener implements AsyncTaskListener {
-
-
-        @Override
-        public void onTaskComplete(List<Movie> list) {
-
-            // assign adapter to movieListAdapter (i.e. AsyncTask)
-            recyclerView.setAdapter(movieListAdapter);
-            moviesList = list;
-
-            if (moviesList != null) {
-                showMovieDataView();
-                movieListAdapter.updateMovieData(moviesList);
-            } else {
-                showErrorView();
-            }
-
-
-        }
-    }
-
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+
+        searchUrl = null;
 
         String[] projection = {
                 MovieContract.MovieEntry._ID,
@@ -280,7 +274,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                             cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_RELEASE_DATE)),
                             cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_RATING)));
                     Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
-                    Log.v("movie = ", movie.toString());
                     detailActivityIntent.putExtra("movie", movie);
                     startActivity(detailActivityIntent);
 
@@ -302,6 +295,27 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         movieCursorAdapter.swapCursor(null);
 
+    }
+
+    public class GetMovieDataListener implements AsyncTaskListener {
+
+
+        @Override
+        public void onTaskComplete(List<Movie> list) {
+
+            moviesList = list;
+
+            if (moviesList != null) {
+                // assign adapter to movieListAdapter (i.e. AsyncTask)
+                recyclerView.setAdapter(movieListAdapter);
+                showMovieDataView();
+                movieListAdapter.updateMovieData(moviesList);
+            } else {
+                showErrorView();
+            }
+
+
+        }
     }
 
 
