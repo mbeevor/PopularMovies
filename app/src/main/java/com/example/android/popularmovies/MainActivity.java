@@ -84,14 +84,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         recyclerView.setHasFixedSize(true);
 
         // check searchUrl is not equal to null, and create new movie adapter
-        if (searchUrl != null) {
+        if (searchUrl == PopularMoviesPreferences.getPopular()) {
             // show popular movies by default, using movieListAdapter
             loadPopular();
+        }
+        if (searchUrl == PopularMoviesPreferences.getTopRated()) {
+            // show popular movies by default, using movieListAdapter
+            loadTopRated();
+        }
 
-        } else {
+        if (searchUrl == null) {
             // launch loader manager to display favourites
             loadFavourites();
         }
+
 
         // assign title of app according to selection
         setTitle(appTitle);
@@ -290,6 +296,34 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void loadTopRated() {
 
         searchUrl = PopularMoviesPreferences.getTopRated();
+
+        // set recyclerView to image adapter, passing in the OnItemClickHandler and Overriding what to do when clicked
+        movieListAdapter = new MovieAdapter
+                (getApplicationContext(), new MovieAdapter.OnItemClickHandler() {
+
+                    @Override
+                    public void onItemClick(View item, int position) {
+
+                        Movie moviePosition = moviesList.get(position);
+                        Movie movie = new Movie(
+                                moviePosition.getMovieTitle(),
+                                moviePosition.getPosterImage(),
+                                moviePosition.getMovieId(),
+                                moviePosition.getBackdropImage(),
+                                moviePosition.getMovieOverview(),
+                                moviePosition.getMovieReleaseDate(),
+                                moviePosition.getMovieRating());
+                        Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
+                        Log.v("movie = ", movie.toString());
+
+                        detailActivityIntent.putExtra("movie", movie);
+                        startActivity(detailActivityIntent);
+
+                    }
+                });
+
+        recyclerView.setAdapter(movieListAdapter);
+        showLoadingView();
         loadMovieData(searchUrl);
         appTitle = getString(R.string.top_rated);
         Toast.makeText(this, R.string.show_top_rated, Toast.LENGTH_SHORT).show();
