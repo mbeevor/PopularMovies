@@ -1,5 +1,10 @@
 # PopularMovies 
 
+<strong>Now with Stage Two completed!</strong>
+
+<strong>IMPORTANT:</strong> For the app to work, you must enter your own API key in the 'gradle.properties' file in the format:<br>
+API_KEY = "your_api_key"
+
 Stage one of the app:
 <ul>
 <li>Fetches data from the Internet with theMovieDB API.
