@@ -70,9 +70,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             appTitle = getString(R.string.popular);
         }
 
-        // assign title of app according to selection
-        setTitle(appTitle);
-
         // find and assign IDs to views
         recyclerView = findViewById(R.id.recyclerview_grid);
         emptyTextView = findViewById(R.id.empty_view);
@@ -88,54 +85,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // check searchUrl is not equal to null, and create new movie adapter
         if (searchUrl != null) {
-            // set recyclerView to image adapter, passing in the OnItemClickHandler and Overriding what to do when clicked
-            movieListAdapter = new MovieAdapter
-                    (getApplicationContext(), new MovieAdapter.OnItemClickHandler() {
-
-                        @Override
-                        public void onItemClick(View item, int position) {
-
-                            Movie moviePosition = moviesList.get(position);
-                            Movie movie = new Movie(
-                                    moviePosition.getMovieTitle(),
-                                    moviePosition.getPosterImage(),
-                                    moviePosition.getMovieId(),
-                                    moviePosition.getBackdropImage(),
-                                    moviePosition.getMovieOverview(),
-                                    moviePosition.getMovieReleaseDate(),
-                                    moviePosition.getMovieRating());
-                            Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
-                            Log.v("movie = ", movie.toString());
-
-                            detailActivityIntent.putExtra("movie", movie);
-                            startActivity(detailActivityIntent);
-
-                        }
-                    });
-            recyclerView.setAdapter(movieListAdapter);
-
-            showLoadingView();
-            loadMovieData(searchUrl);
+            // show popular movies by default, using movieListAdapter
+            loadPopular();
 
         } else {
             // launch loader manager to display favourites
-            getLoaderManager().initLoader(MOVIE_LOADER, null, this);
+            loadFavourites();
         }
+
+        // assign title of app according to selection
+        setTitle(appTitle);
+
 
     }
 
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-
-        if (searchUrl != null) {
-            recyclerView.setAdapter(movieListAdapter);
-        } else {
-            getLoaderManager().initLoader(MOVIE_LOADER, null, this);
-        }
-
-
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -152,26 +115,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // update Search URL to show most popular results
         if (id == R.id.by_popular) {
-            searchUrl = PopularMoviesPreferences.getPopular();
-            appTitle = getString(R.string.popular);
-            loadMovieData(searchUrl);
+            loadPopular();
             Toast.makeText(this, R.string.show_most_popular, Toast.LENGTH_SHORT).show();
         }
 
         // update Search URL to show top rated results
         if (id == R.id.top_rated) {
-            searchUrl = PopularMoviesPreferences.getTopRated();
-            appTitle = getString(R.string.top_rated);
-            loadMovieData(searchUrl);
-            Toast.makeText(this, R.string.show_top_rated, Toast.LENGTH_SHORT).show();
-
+            loadTopRated();
         }
 
-        // update Search URL to null and launch new loader
+        // launch separate loader manager
         if (id == R.id.favourites) {
-
-            appTitle = getString(R.string.favourites);
-            getLoaderManager().initLoader(MOVIE_LOADER, null, this);
+            loadFavourites();
         }
 
         setTitle(appTitle);
@@ -184,9 +139,11 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private void loadMovieData(String searchUrl) {
 
         // Return results based on onOptionsItem selected - default is popular
-        URL getSearchUrl = NetworkUtils.queryUrl(searchUrl);
-        new GetMovieDataTask(new GetMovieDataListener())
-                .execute(getSearchUrl);
+        if (searchUrl != null) {
+            URL getSearchUrl = NetworkUtils.queryUrl(searchUrl);
+            new GetMovieDataTask(new GetMovieDataListener())
+                    .execute(getSearchUrl);
+        }
 
     }
 
@@ -236,8 +193,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
 
-        searchUrl = null;
-
         String[] projection = {
                 MovieContract.MovieEntry._ID,
                 MovieContract.MovieEntry.MOVIE_TITLE,
@@ -258,29 +213,28 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // update empty text view to favourites error
         emptyTextView.setText(R.string.favourites_empty_view);
 
-            movieCursorAdapter = new MovieCursorAdapter(cursor, new MovieCursorAdapter.OnItemClickHandler() {
+        movieCursorAdapter = new MovieCursorAdapter(cursor, new MovieCursorAdapter.OnItemClickHandler() {
 
-                @Override
-                public void onItemClick(View item, int position) {
+            @Override
+            public void onItemClick(View item, int position) {
 
-                    cursor.moveToPosition(position);
+                cursor.moveToPosition(position);
 
-                    Movie movie = new Movie(
-                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_TITLE)),
-                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.POSTER_IMAGE)),
-                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_ID)),
-                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.BACKDROP_IMAGE)),
-                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_OVERVIEW)),
-                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_RELEASE_DATE)),
-                            cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_RATING)));
-                    Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
-                    detailActivityIntent.putExtra("movie", movie);
-                    startActivity(detailActivityIntent);
+                Movie movie = new Movie(
+                        cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_TITLE)),
+                        cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.POSTER_IMAGE)),
+                        cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_ID)),
+                        cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.BACKDROP_IMAGE)),
+                        cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_OVERVIEW)),
+                        cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_RELEASE_DATE)),
+                        cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.MOVIE_RATING)));
+                Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
+                detailActivityIntent.putExtra("movie", movie);
+                startActivity(detailActivityIntent);
 
-                }
-            });
-                recyclerView.setAdapter(movieCursorAdapter);
-
+            }
+        });
+        recyclerView.setAdapter(movieCursorAdapter);
         showMovieDataView();
 
         // show error view if no movies saved to favourites
@@ -295,6 +249,58 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         movieCursorAdapter.swapCursor(null);
 
+    }
+
+    public void loadPopular() {
+
+        searchUrl = PopularMoviesPreferences.getPopular();
+
+        // set recyclerView to image adapter, passing in the OnItemClickHandler and Overriding what to do when clicked
+        movieListAdapter = new MovieAdapter
+                (getApplicationContext(), new MovieAdapter.OnItemClickHandler() {
+
+                    @Override
+                    public void onItemClick(View item, int position) {
+
+                        Movie moviePosition = moviesList.get(position);
+                        Movie movie = new Movie(
+                                moviePosition.getMovieTitle(),
+                                moviePosition.getPosterImage(),
+                                moviePosition.getMovieId(),
+                                moviePosition.getBackdropImage(),
+                                moviePosition.getMovieOverview(),
+                                moviePosition.getMovieReleaseDate(),
+                                moviePosition.getMovieRating());
+                        Intent detailActivityIntent = new Intent(getApplicationContext(), DetailActivity.class);
+                        Log.v("movie = ", movie.toString());
+
+                        detailActivityIntent.putExtra("movie", movie);
+                        startActivity(detailActivityIntent);
+
+                    }
+                });
+
+        recyclerView.setAdapter(movieListAdapter);
+        showLoadingView();
+        loadMovieData(searchUrl);
+        appTitle = getString(R.string.popular);
+
+    }
+
+    public void loadTopRated() {
+
+        searchUrl = PopularMoviesPreferences.getTopRated();
+        loadMovieData(searchUrl);
+        appTitle = getString(R.string.top_rated);
+        Toast.makeText(this, R.string.show_top_rated, Toast.LENGTH_SHORT).show();
+    }
+
+    public void loadFavourites() {
+
+        searchUrl = null;
+        appTitle = getString(R.string.favourites);
+        getLoaderManager().initLoader(MOVIE_LOADER, null, this);
+        Toast.makeText(this, R.string.show_favourites, Toast.LENGTH_SHORT).show();
     }
 
     public class GetMovieDataListener implements AsyncTaskListener {

@@ -17,8 +17,8 @@ import java.util.List;
 public class GetMovieDataTask extends AsyncTask<URL, Void, List<Movie>> {
 
 
-    public List<Movie> moviesList;
-    public AsyncTaskListener delegate = null;
+    private List<Movie> moviesList;
+    private AsyncTaskListener delegate = null;
 
     public GetMovieDataTask(AsyncTaskListener asyncTaskListener) {
         delegate = asyncTaskListener;
@@ -57,6 +57,8 @@ public class GetMovieDataTask extends AsyncTask<URL, Void, List<Movie>> {
 
     @Override
     protected void onPostExecute(final List<Movie> list) {
+
+        moviesList = list;
 
         if (moviesList != null) {
             delegate.onTaskComplete(moviesList);

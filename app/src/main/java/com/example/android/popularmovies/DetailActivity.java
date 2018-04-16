@@ -171,7 +171,7 @@ public class DetailActivity extends AppCompatActivity {
             dbHandler = new DBHandler(this);
 
             // update favourite star based on database entry
-            if (movieInDatabase() == true) {
+            if (movieInDatabase()) {
                 fab.setImageResource(R.drawable.ic_star_border_selected);
             } else {
                 fab.setImageResource(R.drawable.ic_star_border_unselected);
@@ -184,7 +184,7 @@ public class DetailActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
 
-                    if (movieInDatabase() == true) {
+                    if (movieInDatabase()) {
 
                         // confirm deletion
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -196,14 +196,12 @@ public class DetailActivity extends AppCompatActivity {
                             public void onClick(DialogInterface dialogInterface, int id) {
 
                                 // delete movie
-                                String currentMovieId = MovieContract.MovieEntry.MOVIE_ID;
                                 String[] currentMovieIdArray = {movie.getMovieId()};
                                 int rowsDeleted = getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
-                                        currentMovieId + " =? ",
+                                        MOVIE_ID + " =? ",
                                         currentMovieIdArray);
                                 if (rowsDeleted != 0) {
                                     Toast.makeText(getApplicationContext(), R.string.movie_removed_from_favourites, Toast.LENGTH_SHORT).show();
-                                    finish();
                                 } else {
                                     Toast.makeText(getApplicationContext(), R.string.movie_not_removed_from_favourites, Toast.LENGTH_SHORT).show();
                                 }
@@ -244,7 +242,6 @@ public class DetailActivity extends AppCompatActivity {
                         if (newUri != null) {
                             Toast.makeText(getApplicationContext(), R.string.added_to_favourites, Toast.LENGTH_SHORT).show();
                             fab.setImageResource(R.drawable.ic_star_border_selected);
-                            String searchUrl = null;
                         } else {
                             Toast.makeText(getApplicationContext(), R.string.not_added_to_favourites, Toast.LENGTH_SHORT).show();
                         }
